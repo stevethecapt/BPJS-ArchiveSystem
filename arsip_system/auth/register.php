@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "../config/database.php";
 
 $message = "";
@@ -16,8 +17,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
 
             if ($stmt->execute([$username, $email, $hashed_password])) {
-                $message = "Registrasi berhasil!";
-                $status = "success"; 
+                $_SESSION['username'] = $username; 
+                header("Location: dashboard.php");
+                exit();
             } else {
                 $message = "Gagal melakukan registrasi!";
                 $status = "error"; 
@@ -32,6 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -53,10 +56,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: flex;
         }
 
-        nav .img {
-            height: 30px; 
+        .img {
+            height: 38px; 
+            width: 180px;
             margin-right: 15px;
-            align: left;
+            display: block;
+            object-fit: cover;
         }
 
         .top-right {
