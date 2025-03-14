@@ -24,6 +24,7 @@ $jadwal_aktif_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Uraian Isi</th>
                     <th>Kode Klasifikasi</th>
                     <th>Bidang</th>
+                    <th>Aktif sejak Tanggal</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,6 +36,7 @@ $jadwal_aktif_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo htmlspecialchars($row['uraian_isi']); ?></td>
                         <td><?php echo htmlspecialchars($row['kode_klasifikasi']); ?></td>
                         <td><?php echo htmlspecialchars($row['bidang']); ?></td>
+                        <td><?php echo htmlspecialchars($row['jadwal_aktif']); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -60,7 +62,7 @@ form {
 }
 
 .table-container {
-    max-width: 70%;
+    max-width: 80%;
     margin: 0 auto;
     max-height: 900px; 
     overflow-y: auto;

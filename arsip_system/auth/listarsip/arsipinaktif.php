@@ -1,14 +1,14 @@
 <?php
 require_once("../../config/database.php");
 
-try {
-    $stmt = $pdo->prepare("SELECT id, nomor_item_berkas AS nomor_berkas, judul_berkas, uraian_isi, kode_klasifikasi, bidang FROM arsip WHERE CURDATE() > jadwal_inaktif ORDER BY jadwal_inaktif DESC");
-    $stmt->execute();
-    $arsip_inaktif = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Error: " . $e->getMessage());
-}
+$tanggal_hari_ini = date('Y-m-d');
+
+$query = "SELECT * FROM arsip WHERE jadwal_inaktif <= ? ORDER BY jadwal_inaktif DESC";
+$stmt = $pdo->prepare($query);
+$stmt->execute([$tanggal_hari_ini]);
+$arsip_inaktif = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -26,6 +26,7 @@ try {
                     <th>Uraian Isi</th>
                     <th>Kode Klasifikasi</th>
                     <th>Bidang</th>
+                    <th>Inaktif sejak Tanggal</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,6 +39,7 @@ try {
                             <td><?php echo htmlspecialchars($row['uraian_isi']); ?></td>
                             <td><?php echo htmlspecialchars($row['kode_klasifikasi']); ?></td>
                             <td><?php echo htmlspecialchars($row['bidang']); ?></td>
+                            <td><?php echo htmlspecialchars($row['jadwal_inaktif']); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else : ?>
@@ -68,7 +70,7 @@ form {
 }
 
 .table-container {
-    max-width: 70%;
+    max-width: 80%;
     margin: 0 auto;
     max-height: 900px; 
     overflow-y: auto;
