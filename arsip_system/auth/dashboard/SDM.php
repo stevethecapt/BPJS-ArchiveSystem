@@ -1,14 +1,21 @@
 <?php
+session_start();
 require_once("../../config/database.php");
 
 if (!$pdo) {
     die("Koneksi ke database gagal.");
 }
 
-$sql = "SELECT * FROM arsip WHERE TRIM(bidang) = 'SDM' ORDER BY upload_date DESC";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $sql = "SELECT * FROM arsip WHERE TRIM(bidang) = :bidang ORDER BY upload_date DESC";
+    $stmt = $pdo->prepare($sql);
+    $bidang = "SDM Umum dan Komunikasi";
+    $stmt->bindParam(':bidang', $bidang, PDO::PARAM_STR);
+    $stmt->execute();
+    $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -19,48 +26,149 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>SDM, Umum dan Komunikasi</title>
 </head>
 <body>
-    <h2>SDM, Umum dan Komunikasi</h2>
-    <div class="table-container">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Judul Berkas</th>
-                    <th>Uraian Isi</th>
-                    <th>Kode Klasifikasi</th>
-                    <th>Upload Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($files as $file) { ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($file["id"]); ?></td>
-                    <td><?php echo htmlspecialchars($file["judul_berkas"]); ?></td>
-                    <td><?php echo htmlspecialchars($file["uraian_isi"]); ?></td>
-                    <td><?php echo htmlspecialchars($file["kode_klasifikasi"]); ?></td>
-                    <td><?php echo htmlspecialchars($file["upload_date"]); ?></td>
-                </tr>
-                <?php } ?>
-            </tbody>
-        </table>
+    <nav>
+        <img src="img/bpjs.png" class="img" alt="logo">
+        <div class="top-right">
+            <a href="logout.php" class="logoutbtn">Logout</a>
+            <span class="username">
+                <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?>
+            </span>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <a href="../dashboard.php" class="sidetext">Dashboard</a>
+        <a href="SDM.php" class="sidetext">SDM, Umum dan Komunikasi</a>
+        <a href="perencanaan.php" class="sidetext">Perencanaan dan Keuangan</a>
+        <a href="kepersertaan.php" class="sidetext">Kepersertaan dan Mutu Layanan</a>
+        <a href="jaminan.php" class="sidetext">Jaminan Pelayanan Kesehatan</a>
     </div>
-    <div class="btn-container">
-        <a href="inputdata.php" class="inputbtn">Input</a>
-        <a href="detail.php?bidang=<?php echo urlencode($file['bidang']); ?>" class="btn btn-sm btn-info">Detail</a>
-        <a href="" class="downloadbtn">Download</a>
+
+    <div class="content">
+        <h2>SDM, Umum dan Komunikasi</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Judul Berkas</th>
+                        <th>Uraian Isi</th>
+                        <th>Kode Klasifikasi</th>
+                        <th>Upload Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($files as $file) { ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($file["id"]); ?></td>
+                        <td><?php echo htmlspecialchars($file["judul_berkas"]); ?></td>
+                        <td><?php echo htmlspecialchars($file["uraian_isi"]); ?></td>
+                        <td><?php echo htmlspecialchars($file["kode_klasifikasi"]); ?></td>
+                        <td><?php echo htmlspecialchars($file["upload_date"]); ?></td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="btn-container">
+            <a href="inputdata.php" class="inputbtn">Input</a>
+            <a href="detail.php?bidang=<?php echo urlencode($bidang); ?>" class="btn-info">Detail</a>
+            <a href="" class="downloadbtn">Download</a>
+        </div>
     </div>
 </body>
 </html>
 <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
     background-color: #f8f9fa;
+    display: flex;
+    flex-direction: row;
+}
+nav {
+    width: 100%;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 15px 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+}
+nav .img {
+    height: 38px;
+    width: 180px;
+    object-fit: cover;
+}
+.top-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.username {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+}
+.logoutbtn {
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    border: none;
+    background-color: #dc3545;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+.sidebar {
+    width: 230px;
+    height: 100vh;
+    background-color: #fff;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+.sidetext {
+    padding: 15px 18px;
+    display: block;
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    width: 90%;
+    font-size: 14px;
+    border-radius: 5px;
+}
+.sidetext:hover {
+    background: #007bff;
+    color: white;
+    transform: scale(1.05);
+}
+.content {
+    margin-left: 250px;
+    padding: 80px 20px 20px;
+    flex-grow: 1;
 }
 
 h2 {
     text-align: center;
     color: #333;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 form {
@@ -78,7 +186,7 @@ select {
 }
 
 .table-container {
-    max-width: 70%;
+    max-width: 80%;
     margin: 0 auto;
     max-height: 400px; 
     overflow-y: auto;
@@ -107,40 +215,22 @@ th, td {
 }
 
 .btn-container {
-    text-align: center; 
-    margin-top: 20px; 
+    margin-top: 20px;
+    text-align: center;
 }
 
-.inputbtn {
-    background-color: #007bff;
-    width: 100px;
-    text-align: center;
-    padding: 10px;
-    color: white;
+.inputbtn, .btn-info, .downloadbtn {
+    padding: 12px 18px;
     border-radius: 5px;
     text-decoration: none;
     display: inline-block;
+    margin: 5px;
+    color: white;
+    text-align: center;
+    width: 130px; 
 }
 
-.btn-info {
-    background-color: #007bff;
-    width: 100px;
-    text-align: center;
-    padding: 10px;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.downloadbtn {
-    background-color: #17a2b8;
-    width: 100px;
-    text-align: center;
-    padding: 10px;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    display: inline-block;
-}
+.inputbtn { background-color: #007bff; }
+.btn-info { background-color: #17a2b8; }
+.downloadbtn { background-color: #28a745; }
 </style>

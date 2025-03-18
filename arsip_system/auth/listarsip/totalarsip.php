@@ -5,6 +5,11 @@ $sql = "SELECT * FROM arsip ORDER BY upload_date DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$sqlSuggestion = "SELECT * FROM arsip ORDER BY upload_date DESC LIMIT 5";
+$stmtSuggestion = $pdo->prepare($sqlSuggestion);
+$stmtSuggestion->execute();
+$recentFiles = $stmtSuggestion->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -41,6 +46,10 @@ $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </tbody>
         </table>
     </div>
+    <div class="btn-container">
+        <a href="detail.php?filter=total" class="btn btn-info">Lihat Detail</a>
+        <a href="" class="downloadbtn">Download</a>
+    </div>
 </body>
 </html>
 <style>
@@ -58,6 +67,15 @@ h2 {
 form {
     text-align: center;
     margin-bottom: 20px;
+}
+
+select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 200px;
+    text-align: center;
 }
 
 .table-container {
@@ -93,30 +111,32 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-.btn {
+.btn-container {
     text-decoration: none;
-    padding: 8px 12px;
+    padding: 5px 6px;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 13px;
     color: white;
-    background-color: #28a745;
     border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
 }
 
-.btn-info {
-    background-color: #17a2b8;
-}
-
-.inputbtn {
-    display: block;
-    width: 120px;
-    margin: 20px auto;
-    text-align: center;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
+.btn-info, .downloadbtn {
+    padding: 10px 8px;
     border-radius: 5px;
     text-decoration: none;
-    font-weight: bold;
+    display: fixed;
+    justify-content: center;
+    align-items: center;
+    margin: 5px ;
+    color: white;
+    text-align: center;
+    width: 120px;
 }
+
+.btn-info { background-color: #17a2b8; }
+.downloadbtn { background-color: #28a745; }
 </style>

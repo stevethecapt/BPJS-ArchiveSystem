@@ -24,6 +24,11 @@ try {
 } catch (PDOException $e) {
     $total_arsip = $arsip_aktif = $arsip_inaktif = 0;
 }
+
+$sqlRecentFiles = "SELECT * FROM arsip ORDER BY upload_date DESC LIMIT 5";
+$stmtRecentFiles = $pdo->prepare($sqlRecentFiles);
+$stmtRecentFiles->execute();
+$recentFiles = $stmtRecentFiles->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -32,19 +37,21 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Dashboard</title>
 </head>
 <body>
     <nav>
         <img src="img/bpjs.png" class="img" alt="logo">
         <div class="top-right">
-            <a href="dashboard/arsiplist.php" class="logoutbtn">Logout</a>
-            <img src="img/download.jpeg" alt="User Profile">
-            <span class="username">Username</span>
+            <a href="logout.php" class="logoutbtn">Logout</a>
+            <img src="">
+            <span class="username"><?php if (isset($_SESSION['username'])): ?>
+            <?php echo htmlspecialchars($_SESSION['username']); ?></li>
+        <?php endif; ?></span>
         </div>
     </nav>
     
     <div class="sidebar">
-        <h5>Bidang</h5>
         <a href="dashboard/SDM.php" class="sidetext">SDM, Umum dan Komunikasi</a>
         <a href="dashboard/perencanaan.php" class="sidetext">Perencanaan dan Keuangan</a>
         <a href="dashboard/kepersertaan.php" class="sidetext">Kepersertaan dan Mutu Layanan</a>
@@ -52,69 +59,86 @@ try {
         <a href="dashboard/inputdata.php" class="sidetext">Masukan Data</a>
     </div>
     
-    <div class="content">
-    <div class="row">
-        <div class="col-md-3">
-            <a href="listarsip/totalarsip.php" class="text-decoration-none card-link">
-                <div class="card bg-primary text-white">
-                    <div class="card-body">
-                        <h6>Total Arsip</h6>
-                        <p><?php echo htmlspecialchars($total_arsip); ?></p>
+    <div class="card-container">
+        <div class="row">
+            <div class="col-md-3">
+                <a href="listarsip/totalarsip.php" class="text-decoration-none card-link">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h6>Total Arsip</h6>
+                            <p><?php echo htmlspecialchars($total_arsip); ?></p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="listarsip/arsipaktif.php" class="text-decoration-none card-link">
-                <div class="card bg-success text-white">
-                    <div class="card-body">
-                        <h6>Arsip Aktif</h6>
-                        <p><?php echo htmlspecialchars($arsip_aktif); ?></p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="listarsip/arsipaktif.php" class="text-decoration-none card-link">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6>Arsip Aktif</h6>
+                            <p><?php echo htmlspecialchars($arsip_aktif); ?></p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="listarsip/arsipinaktif.php" class="text-decoration-none card-link">
-                <div class="card bg-danger text-white">
-                    <div class="card-body">
-                        <h6>Arsip Inaktif</h6>
-                        <p><?php echo htmlspecialchars($arsip_inaktif); ?></p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="listarsip/arsipinaktif.php" class="text-decoration-none card-link">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <h6>Arsip Inaktif</h6>
+                            <p><?php echo htmlspecialchars($arsip_inaktif); ?></p>
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="listarsip/pemusnahan.php" class="text-decoration-none card-link">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <h6>Pemusnahan</h6>
+                            <p><?php echo htmlspecialchars($arsip_inaktif); ?></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
-    </div>
-        
-        <h4 class="mt-4">Daftar Arsip</h4>
+        <div class="row mt-3">
+            <div class="col-12">
+            <h4 class="mb-3">Baru saja</h4>
+        </div>
         <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Judul Berkas</th>
-                    <th>Unit Kerja</th>
-                    <th>Tanggal</th>
-                    <th>Klasifikasi</th>
-                    <th>Lokasi</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Rawat Jalan Tingkat Pertama</td>
-                    <td>PMU</td>
-                    <td>13 Agustus 2025</td>
-                    <td>Terbatas</td>
-                    <td>Boks A1</td>
-                    <td><a href="#" class="btn btn-sm btn-info">Detail</a></td>
-                </tr>
-            </tbody>
-        </table>
+        <thead>
+            <tr>
+                <th>Nomor Berkas</th>
+                <th>Kode Klasifikasi</th>
+                <th>Judul Berkas</th>
+                <th>Uraian Isi</th>
+                <th>Bidang</th>
+                <th>Upload Date</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php 
+            $no = 1;
+            foreach ($recentFiles as $file) { ?>
+            <tr>
+                <td><?php echo htmlspecialchars($file["nomor_berkas"]); ?></td>
+                <td><?php echo htmlspecialchars($file["kode_klasifikasi"]); ?></td>
+                <td><?php echo htmlspecialchars($file["judul_berkas"]); ?></td>
+                <td><?php echo htmlspecialchars($file["uraian_isi"]); ?></td>
+                <td><?php echo htmlspecialchars($file["bidang"]); ?></td>
+                <td><?php echo htmlspecialchars($file["upload_date"]); ?></td>
+                <td>
+                    <a href="detailsugestion.php?id=<?php echo urlencode($file['id']); ?>" class="btn btn-sm btn-info">Detail</a>
+                </td>
+            </tr>
+            <?php } ?>
+        </tbody>
+    </table>
     </div>
 </body>
 </html>
-
 <style>
 body {
     display: flex;
@@ -151,6 +175,25 @@ nav .img {
     gap: 10px;
 }
 
+.username {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+}
+
+.logoutbtn {
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    border: none;
+    background-color: #dc3545;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
 .sidebar {
     width: 230px;
     height: 100vh;
@@ -158,7 +201,7 @@ nav .img {
     position: fixed;
     top: 60px;
     left: 0;
-    padding-top: 20px;
+    padding-top: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -182,23 +225,13 @@ nav .img {
     transform: scale(1.05);
 }
 
-.logoutbtn {
-    font-size: 1rem;
-    font-weight: 500;
-    color: white;
-    border: none;
-    background-color: #dc3545;
-    padding: 10px 15px;
-    text-decoration: none;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-}
-
-.content {
+.card-container {
     margin-left: 250px;
     padding: 80px 20px 20px;
     flex-grow: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .row {
@@ -213,12 +246,14 @@ nav .img {
 }
 
 .card {
-    margin-top: 20px;
-    padding: 15px;
+    width: 150px;
+    height: 90px;
+    padding: 3px;
     border-radius: 8px;
     text-align: center;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    margin: 10px auto; 
 }
 
 .card:hover {
@@ -232,25 +267,7 @@ nav .img {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
-}
-
-thead {
-    background-color: #007bff;
-    color: white;
-}
-
-th, td {
-    padding: 12px;
     text-align: center;
-    border-bottom: 1px solid #ddd;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-tr:hover {
-    background-color: #ddd;
 }
 
 .btn-info {

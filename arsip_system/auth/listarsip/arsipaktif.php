@@ -2,18 +2,19 @@
 require_once("../../config/database.php");
 
 $tanggal_hari_ini = date('Y-m-d');
-$query = "SELECT * FROM arsip WHERE jadwal_aktif <= ? AND jadwal_inaktif > ? ORDER BY jadwal_aktif ASC";
-$stmt = $pdo->prepare($query);
-$stmt->execute([$tanggal_hari_ini, $tanggal_hari_ini]);
-$jadwal_aktif_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 
+// Query untuk mengambil arsip yang masih aktif (belum inaktif)
+$query = "SELECT * FROM arsip WHERE jadwal_inaktif > ? ORDER BY jadwal_inaktif ASC";
+$stmt = $pdo->prepare($query);
+$stmt->execute([$tanggal_hari_ini]);
+$arsip_aktif = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 </head>
 <body>
-    <h2>Daftar Arsip Aktif</h2>
+    <h2 class="mb-3">Daftar Arsip Aktif</h2>
     <div class="table-container">
         <table class="table table-striped">
             <thead>
@@ -24,23 +25,33 @@ $jadwal_aktif_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Uraian Isi</th>
                     <th>Kode Klasifikasi</th>
                     <th>Bidang</th>
-                    <th>Aktif sejak Tanggal</th>
+                    <th>Aktif Sejak Tanggal</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($jadwal_aktif_data as $row) : ?>
+                <?php if (!empty($arsip_aktif)) : ?>
+                    <?php foreach ($arsip_aktif as $row) : ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row['id']); ?></td>
+                            <td><?php echo htmlspecialchars($row['nomor_berkas']); ?></td>
+                            <td><?php echo htmlspecialchars($row['judul_berkas']); ?></td>
+                            <td><?php echo htmlspecialchars($row['uraian_isi']); ?></td>
+                            <td><?php echo htmlspecialchars($row['kode_klasifikasi']); ?></td>
+                            <td><?php echo htmlspecialchars($row['bidang']); ?></td>
+                            <td><?php echo htmlspecialchars($row['jadwal_aktif']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else : ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($row['id']); ?></td>
-                        <td><?php echo htmlspecialchars($row['nomor_berkas']); ?></td>
-                        <td><?php echo htmlspecialchars($row['judul_berkas']); ?></td>
-                        <td><?php echo htmlspecialchars($row['uraian_isi']); ?></td>
-                        <td><?php echo htmlspecialchars($row['kode_klasifikasi']); ?></td>
-                        <td><?php echo htmlspecialchars($row['bidang']); ?></td>
-                        <td><?php echo htmlspecialchars($row['jadwal_aktif']); ?></td>
+                        <td colspan="7" class="text-center">Tidak ada arsip aktif.</td>
                     </tr>
-                <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
+    </div>
+    <div class="btn-container">
+        <a href="detail.php?id=<?php echo $row['id']; ?>" class="btn btn-info">Detail</a>
+        <a href="" class="downloadbtn">Download</a>
     </div>
 </body>
 </html>
@@ -59,6 +70,15 @@ h2 {
 form {
     text-align: center;
     margin-bottom: 20px;
+}
+
+select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 200px;
+    text-align: center;
 }
 
 .table-container {
@@ -94,30 +114,32 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-.btn {
+.btn-container {
     text-decoration: none;
-    padding: 8px 12px;
+    padding: 5px 6px;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 13px;
     color: white;
-    background-color: #28a745;
     border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
 }
 
-.btn-info {
-    background-color: #17a2b8;
-}
-
-.inputbtn {
-    display: block;
-    width: 120px;
-    margin: 20px auto;
-    text-align: center;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
+.btn-info, .downloadbtn {
+    padding: 10px 8px;
     border-radius: 5px;
     text-decoration: none;
-    font-weight: bold;
+    display: fixed;
+    justify-content: center;
+    align-items: center;
+    margin: 5px ;
+    color: white;
+    text-align: center;
+    width: 120px;
 }
+
+.btn-info { background-color: #17a2b8; }
+.downloadbtn { background-color: #28a745; }
 </style>

@@ -1,9 +1,5 @@
 <?php
 require_once("../../config/database.php");
-if (!isset($_GET['bidang'])) {
-    die("Bidang tidak ditemukan.");
-}
-$bidang = $_GET['bidang'];
 
 $sql = "SELECT *, 
         CASE 
@@ -12,24 +8,11 @@ $sql = "SELECT *,
             ELSE 'Pemusnahan'
         END AS status_arsip
         FROM arsip 
-        WHERE bidang = :bidang 
         ORDER BY upload_date DESC";
-        
+
 $stmt = $pdo->prepare($sql);
-$stmt->bindParam(':bidang', $bidang, PDO::PARAM_STR);
 $stmt->execute();
 $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if (!$files) {
-    die("Data tidak ditemukan untuk bidang ini.");
-}
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $sql = "SELECT * FROM arsip WHERE id = :id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['id' => $id]);
-    $file = $stmt->fetch(PDO::FETCH_ASSOC);
-}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -83,7 +66,6 @@ if (isset($_GET['id'])) {
                 $start_date = new DateTime($file["jadwal_aktif"]);
                 $end_date = new DateTime($file["jadwal_inaktif"]);
                 $interval = $start_date->diff($end_date);
-
                 $masa_aktif = "";
                 if ($interval->y > 0) {
                     $masa_aktif .= $interval->y . " tahun ";
@@ -94,7 +76,6 @@ if (isset($_GET['id'])) {
                 if ($interval->d > 0) {
                     $masa_aktif .= $interval->d . " hari";
                 }
-                
                 echo htmlspecialchars(trim($masa_aktif));
                 ?>
             </td>
@@ -198,5 +179,3 @@ if (isset($_GET['id'])) {
         background-color: #0056b3;
     }
 </style>
-
-

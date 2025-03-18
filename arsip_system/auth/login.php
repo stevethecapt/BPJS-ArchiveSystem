@@ -23,12 +23,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let notif = document.getElementById("notification");
+        if (notif) {
+            notif.style.display = "block"; 
+            setTimeout(function() {
+                notif.style.opacity = "1";
+                let fadeEffect = setInterval(function () {
+                    if (!notif.style.opacity) {
+                        notif.style.opacity = "1";
+                    }
+                    if (notif.style.opacity > "0") {
+                        notif.style.opacity -= "0.1";
+                    } else {
+                        clearInterval(fadeEffect);
+                        notif.style.display = "none";
+                    }
+                }, 100);
+            }, 1000);
+        }
+    });
+</script>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
 </head>
 <body>
     <?php if (!empty($message)): ?>
@@ -51,29 +72,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="password" name="password" placeholder="Password" required><br>
         <button type="submit">Login</button>
     </form>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            let notif = document.getElementById("notification");
-            if (notif) {
-                notif.style.display = "block"; 
-                setTimeout(function() {
-                    notif.style.opacity = "1";
-                    let fadeEffect = setInterval(function () {
-                        if (!notif.style.opacity) {
-                            notif.style.opacity = "1";
-                        }
-                        if (notif.style.opacity > "0") {
-                            notif.style.opacity -= "0.1";
-                        } else {
-                            clearInterval(fadeEffect);
-                            notif.style.display = "none";
-                        }
-                    }, 100);
-                }, 1000);
-            }
-        });
-    </script>
 </body>
 </html>
 <style>

@@ -70,13 +70,14 @@ echo "<script>showMessage('" . htmlspecialchars($message) . "', '" . $status . "
     <nav>
         <img src="img/bpjs.png" class="img" alt="logo">
         <div class="top-right">
-            <img src="img/download.jpeg" alt="User Profile">
-            <span class="username">Username</span>
+            <a href="logout.php" class="logoutbtn">Logout</a>
+            <span class="username">
+                <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?>
+            </span>
         </div>
     </nav>
 
     <form method="POST" action="">
-    <h2>Input Data</h2>
     <div class="form-group">
         <label>Nomor Berkas</label>
         <input type="number" name="nomor_berkas" required>
@@ -153,10 +154,10 @@ echo "<script>showMessage('" . htmlspecialchars($message) . "', '" . $status . "
         <label>Bidang</label>
         <select id="bidang" name="bidang"required>
             <option value="">Pilih Bidang</option>
-            <option value="SDM">SDM, Umum dan Komunikasi</option>
-            <option value="perencanaan">Perencanaan dan Keuangan</option>
-            <option value="kepersetaan">Kepersertaan dan Mutu Layanan</option>
-            <option value="jaminan">Jaminan Pelayanan Kesehatan</option>
+            <option value="SDM Umum dan Komunikasi">SDM, Umum dan Komunikasi</option>
+            <option value="Perencanaan dan Keuangan">Perencanaan dan Keuangan</option>
+            <option value="Kepesertaan dan Mutu Layanan">Kepersertaan dan Mutu Layanan</option>
+            <option value="Jaminan Pelayanan Kesehatan">Jaminan Pelayanan Kesehatan</option>
         </select>
     </div>
     <button type="submit">Simpan</button>
@@ -164,121 +165,146 @@ echo "<script>showMessage('" . htmlspecialchars($message) . "', '" . $status . "
 </body>
 </html>
 <style>
-    nav {
-        width: 100%;
-        background: #fff;
-        position: fixed;
-        top: 0;
-        padding: 15px 20px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        z-index: 1000;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    margin-top: 20px;
+}
 
-    nav .img {
-        height: 38px;
-        width: 180px;
-        margin-right: auto;
-        object-fit: cover;
-    }
+nav {
+    width: 100%;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 15px 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+}
 
-    .top-right {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
+nav .img {
+    height: 38px;
+    width: 180px;
+    object-fit: cover;
+}
 
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0;
-        margin-top: 20px;
-    }
+.top-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    .message.show {
-        display: block;
-        top: 10px;
-    }
+.username {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+}
 
-    .message {
-        position: fixed;
-        top: -60px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 550px;
-        z-index: 1000; 
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-        opacity: 0;
-        transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
-    }
-    .success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
+.logoutbtn {
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    border: none;
+    background-color: #dc3545;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
 
-    .error { 
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb; 
-    }
+.message.show {
+    display: block;
+    top: 10px;
+}
 
-    form {
-        background: #fff;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 500px;
-        display: flex;
-        flex-direction: column;
-        max-height: 70vh;
-        overflow-y: auto;
-        position: fixed;
-        align-items: center;
-    }
+.message {
+    position: fixed;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 550px;
+    z-index: 1000; 
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
+}
 
-    .form-group {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        margin-bottom: 10px;
-    }
+.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
 
-    label {
-        width: 35%; 
-        text-align: left; 
-    }
+.error { 
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb; 
+}
 
-    input, textarea, select {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 14px;
-    }
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 520px;
+    display: flex;
+    flex-direction: column;
+    max-height: 75vh;
+    overflow-y: auto;
+    position: fixed;
+    align-items: center;
+}
 
-    button {
-        margin-top: 15px;
-        background: #28a745;
-        color: white;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        width: 100%;
-    }
+.form-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
 
-    button:hover {
-        background: #218838;
-    }
+label {
+    width: 35%; 
+    text-align: left; 
+}
 
+input, textarea, select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+button {
+    margin-top: 15px;
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+button:hover {
+    background: #218838;
+}
 </style>
