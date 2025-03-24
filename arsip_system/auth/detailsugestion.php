@@ -109,13 +109,13 @@ if (!$file) {
     }
 
     table {
-        width: 100%;
+        width: 90%;
         border-collapse: collapse;
         margin-top: 10px;
     }
 
     th, td {
-        padding: 5px;
+        padding: 3px;
         border-bottom: 1px solid #ddd;
         border: 1px solid #ddd;
         text-align: left;

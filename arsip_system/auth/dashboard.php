@@ -12,17 +12,37 @@ try {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $total_arsip = $result['total'] ?? 0;
 
-    $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM arsip WHERE jadwal_aktif <= CURDATE() AND jadwal_inaktif > CURDATE()");
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) as total 
+        FROM arsip 
+        WHERE jadwal_aktif <= CURDATE() 
+        AND jadwal_inaktif > CURDATE()
+    ");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $arsip_aktif = $result['total'] ?? 0;
 
-    $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM arsip WHERE jadwal_inaktif <= CURDATE()");
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) as total 
+        FROM arsip 
+        WHERE jadwal_inaktif <= CURDATE() 
+        AND jadwal_inaktif > DATE_SUB(CURDATE(), INTERVAL 3 DAY)
+    ");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $arsip_inaktif = $result['total'] ?? 0;
+
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) as total 
+        FROM arsip 
+        WHERE jadwal_inaktif <= DATE_SUB(CURDATE(), INTERVAL 3 DAY)
+    ");
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $arsip_pemusnahan = $result['total'] ?? 0;
+
 } catch (PDOException $e) {
-    $total_arsip = $arsip_aktif = $arsip_inaktif = 0;
+    $total_arsip = $arsip_aktif = $arsip_inaktif = $arsip_pemusnahan = 0;
 }
 
 $sqlRecentFiles = "SELECT * FROM arsip ORDER BY upload_date DESC LIMIT 5";
@@ -30,7 +50,6 @@ $stmtRecentFiles = $pdo->prepare($sqlRecentFiles);
 $stmtRecentFiles->execute();
 $recentFiles = $stmtRecentFiles->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -41,10 +60,10 @@ $recentFiles = $stmtRecentFiles->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <nav>
-        <img src="img/bpjs.png" class="img" alt="logo">
+        <img src="img/bpjs.png" class="img">
         <div class="top-right">
             <a href="logout.php" class="logoutbtn">Logout</a>
-            <img src="">
+            <!-- <img src=""> -->
             <span class="username"><?php if (isset($_SESSION['username'])): ?>
             <?php echo htmlspecialchars($_SESSION['username']); ?></li>
         <?php endif; ?></span>
@@ -86,7 +105,7 @@ $recentFiles = $stmtRecentFiles->fetchAll(PDO::FETCH_ASSOC);
                     <div class="card bg-secondary text-white">
                         <div class="card-body">
                             <h6>Arsip Inaktif</h6>
-                            <p><?php echo htmlspecialchars($arsip_inaktif); ?></p>
+                            <p><?php echo number_format($arsip_inaktif); ?></p>
                         </div>
                     </div>
                 </a>
@@ -96,7 +115,7 @@ $recentFiles = $stmtRecentFiles->fetchAll(PDO::FETCH_ASSOC);
                     <div class="card bg-danger text-white">
                         <div class="card-body">
                             <h6>Pemusnahan</h6>
-                            <p><?php echo htmlspecialchars($arsip_inaktif); ?></p>
+                            <p><?php echo number_format($arsip_pemusnahan); ?></p>
                         </div>
                     </div>
                 </a>
@@ -163,7 +182,7 @@ nav {
     z-index: 1000;
 }
 
-nav .img {
+.img {
     height: 38px;
     width: 180px;
     object-fit: cover;
