@@ -45,6 +45,18 @@ try {
     $total_arsip = $arsip_aktif = $arsip_inaktif = $arsip_pemusnahan = 0;
 }
 
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+if ($search !== '') {
+    $stmt = $conn->prepare("SELECT * FROM arsip WHERE judul_berkas LIKE ?");
+    $search_param = "%" . $search . "%";
+    $stmt->bind_param("s", $search_param);
+    $stmt->execute();
+    $result = $stmt->get_result();
+} else {
+    $result = false;
+}
+// Baru saja ditambahkan 
 $sqlRecentFiles = "SELECT * FROM arsip ORDER BY upload_date DESC LIMIT 5";
 $stmtRecentFiles = $pdo->prepare($sqlRecentFiles);
 $stmtRecentFiles->execute();
@@ -56,20 +68,56 @@ $recentFiles = $stmtRecentFiles->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Dashboard</title>
 </head>
 <body>
-    <nav>
-        <img src="img/bpjs.png" class="img">
-        <div class="top-right">
-            <a href="logout.php" class="logoutbtn">Logout</a>
-            <!-- <img src=""> -->
-            <span class="username"><?php if (isset($_SESSION['username'])): ?>
-            <?php echo htmlspecialchars($_SESSION['username']); ?></li>
-        <?php endif; ?></span>
-        </div>
-    </nav>
-    
+<nav>
+    <img src="img/bpjs.png" class="img">
+    <div class="top-right">
+    <form method="GET" action="search.php" style="position: relative;">
+        <input type="text" id="search" name="search" placeholder="Cari arsip..." autocomplete="off"
+            style="padding: 10px 35px 10px 15px; border-radius: 15px; border: 1px solid #ccc; outline: none;">
+        <button type="submit" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;">
+            <i class="fa fa-search" style="font-size: 16px; color: #666;"></i>
+        </button>
+        <div id="livesearch" style="position: absolute; background: white; width: 100%; border: 1px solid #ccc; display: none;"></div>
+    </form>
+        
+        <a href="logout.php" class="logoutbtn">Logout</a>
+        <span class="username">
+            <?php if (isset($_SESSION['username'])): ?>
+                <?php echo htmlspecialchars($_SESSION['username']); ?>
+            <?php endif; ?>
+        </span>
+    </div>
+</nav>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#search").keyup(function(){
+        var query = $(this).val();
+        if (query !== "") {
+            $.ajax({
+                url: "livesearch.php",
+                method: "POST",
+                data: {search: query},
+                success: function(data) {
+                    $("#livesearch").fadeIn();
+                    $("#livesearch").html(data);
+                }
+            });
+        } else {
+            $("#livesearch").fadeOut();
+        }
+    });
+
+    $(document).on("click", "li", function(){
+        $("#search").val($(this).text());
+        $("#livesearch").fadeOut();
+    });
+});
+</script>
     <div class="sidebar">
         <a href="dashboard/SDM.php" class="sidetext">SDM, Umum dan Komunikasi</a>
         <a href="dashboard/perencanaan.php" class="sidetext">Perencanaan dan Keuangan</a>

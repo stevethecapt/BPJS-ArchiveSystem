@@ -101,13 +101,13 @@ if (isset($_GET['id'])) {
             <td>
                 <?php 
                 $inactive_start = new DateTime($file["jadwal_inaktif"]);
-                $inactive_end = (clone $inactive_start)->modify('+1 year');
+                $inactive_end = (clone $inactive_start)->modify('+3 days'); // Ubah menjadi 3 hari
                 $inactive_interval = $inactive_start->diff($inactive_end);
 
-                echo htmlspecialchars($inactive_interval->y > 0 ? $inactive_interval->y . " tahun " : "") .
-                    htmlspecialchars($inactive_interval->m > 0 ? $inactive_interval->m . " bulan" : "");
+                echo htmlspecialchars($inactive_interval->d > 0 ? $inactive_interval->d . " hari" : "0 hari");
                 ?>
             </td>
+
             <td><?php echo htmlspecialchars($file["status_arsip"]); ?></td>
             <td><?php echo htmlspecialchars($file["keterangan"]); ?></td>
             <td><?php echo htmlspecialchars($file["lokasi_rak"]); ?></td>

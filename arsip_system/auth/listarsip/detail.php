@@ -104,33 +104,17 @@ try {
                     </td>
                     <td>
                         <?php 
-                        if (!empty($file["jadwal_inaktif"])) {
-                            try {
-                                $inactive_start = new DateTime($file["jadwal_inaktif"]);
-                                $inactive_end = (clone $inactive_start)->modify('+1 year');
-                                $inactive_interval = $inactive_start->diff($inactive_end);
+                        $inactive_start = new DateTime($file["jadwal_inaktif"]);
+                        $today = new DateTime();
+                        $diff = $today->diff($inactive_start);
 
-                                $masa_inaktif = "";
-                                if ($inactive_interval->y > 0) {
-                                    $masa_inaktif .= $inactive_interval->y . " tahun ";
-                                }
-                                if ($inactive_interval->m > 0) {
-                                    $masa_inaktif .= $inactive_interval->m . " bulan ";
-                                }
-                                if ($inactive_interval->d > 0) {
-                                    $masa_inaktif .= $inactive_interval->d . " hari";
-                                }
-
-                                echo htmlspecialchars(trim($masa_inaktif));
-                            } catch (Exception $e) {
-                                echo "Format tanggal salah";
-                            }
+                        if ($diff->days <= 3 && $today >= $inactive_start) {
+                            echo htmlspecialchars($diff->days . " hari");
                         } else {
-                            echo "Tidak tersedia";
+                            echo "Masa inaktif berakhir";
                         }
                         ?>
                     </td>
-
                     <td>
                         <?php 
                         $today = new DateTime();
