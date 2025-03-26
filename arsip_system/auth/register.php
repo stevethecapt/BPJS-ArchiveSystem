@@ -6,11 +6,11 @@ $message = "";
 $status = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $fullname = trim($_POST['fullname']); 
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    // Validasi apakah username atau email sudah terdaftar
     $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
     $stmt->execute([$username, $email]);
     $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -19,12 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "Username atau email sudah digunakan!";
         $status = "error";
     } else {
-        // Hash password sebelum disimpan
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // Simpan user ke database
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-        if ($stmt->execute([$username, $email, $hashed_password])) {
+        $stmt = $pdo->prepare("INSERT INTO users (fullname, username, email, password) VALUES (?, ?, ?, ?)");
+        
+        if ($stmt->execute([$fullname, $username, $email, $hashed_password])) { 
+            $_SESSION['fullname'] = $fullname;
             $_SESSION['username'] = $username;
             $_SESSION['email'] = $email;
             header("Location: dashboard.php");
@@ -36,7 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             let notif = document.getElementById("notification");
@@ -84,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form method="post">
             <h2>Register</h2>
+            <input type="text" name="fullname" placeholder="Nama Lengkap" required><br>
             <input type="text" name="username" placeholder="Username" required><br>
             <input type="email" name="email" placeholder="Email" required><br>
             <input type="password" name="password" placeholder="Password" required><br>

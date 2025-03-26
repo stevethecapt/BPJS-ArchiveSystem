@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 22, 2025 at 05:48 PM
+-- Generation Time: Mar 26, 2025 at 10:05 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -69,6 +69,9 @@ INSERT INTO `arsip` (`id`, `nomor_berkas`, `judul_berkas`, `nomor_item_berkas`, 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
+  `fullname` varchar(255) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `address` text NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `bidang` enum('SDM Umum dan Komunikasi','Perencanaan dan Keuangan','Kepesertaan dan Mutu Layanan','Jaminan Pelayanan Kesehatan') NOT NULL
@@ -78,12 +81,13 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `bidang`) VALUES
-(49, 'stevekevins', 'stevekevins@gmail.com', '$2y$10$krFV88fKsjaRon2cWJn7PO2L1tHnsfojL1ELk/zmwdbJXA4wFKF6i', ''),
-(50, 'girikanan', 'girikanan@gmail.com', '$2y$10$FmeVK2i9OxwT12YwNzOKOuzG/tnwud69ZomTRC2/3xNS/whyX2pzy', ''),
-(51, 'chris', 'chris@gmail.com', '$2y$10$Ia43iaU6frjwdSZJVblg5O2cYgrfcF0WgftS/lXjpg4KS8CIa3qmm', ''),
-(52, 'stevenk', 'stvenkvn@gmail.com', '$2y$10$3suJJ2ZIDcKAKnSVPEHHjeZq5rr1gg4t4FTLfof27dRbXhar8mFfa', ''),
-(53, 'ken', 'ken@gmail.com', '$2y$10$bsBJrF7w76pMDzJIDYfYpeAPTeUkiSYSZjo5DZMfHn1vkaqe7.lsW', '');
+INSERT INTO `users` (`id`, `username`, `fullname`, `phone`, `address`, `email`, `password`, `bidang`) VALUES
+(49, 'stevekevins', '', '', '', 'stevekevins@gmail.com', '$2y$10$krFV88fKsjaRon2cWJn7PO2L1tHnsfojL1ELk/zmwdbJXA4wFKF6i', ''),
+(50, 'girikanan', '', '', '', 'girikanan@gmail.com', '$2y$10$FmeVK2i9OxwT12YwNzOKOuzG/tnwud69ZomTRC2/3xNS/whyX2pzy', ''),
+(51, 'chris', '', '', '', 'chris@gmail.com', '$2y$10$Ia43iaU6frjwdSZJVblg5O2cYgrfcF0WgftS/lXjpg4KS8CIa3qmm', ''),
+(52, 'stevenk', '', '', '', 'stvenkvn@gmail.com', '$2y$10$3suJJ2ZIDcKAKnSVPEHHjeZq5rr1gg4t4FTLfof27dRbXhar8mFfa', ''),
+(53, 'ken', '', '', '', 'ken@gmail.com', '$2y$10$bsBJrF7w76pMDzJIDYfYpeAPTeUkiSYSZjo5DZMfHn1vkaqe7.lsW', ''),
+(54, 'stevekevin', 'steve kevin', '', '', 'steven@gmail.com', '$2y$10$/2UkDZUgBm1y2sdb.vPLKuIB.b7nfeI.xR17V9fZeIwe28i/.ds5.', 'SDM Umum dan Komunikasi');
 
 --
 -- Indexes for dumped tables
@@ -115,7 +119,7 @@ ALTER TABLE `arsip`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

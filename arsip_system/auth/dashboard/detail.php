@@ -99,16 +99,36 @@ if (isset($_GET['id'])) {
                 ?>
             </td>
             <td>
-                <?php 
+            <?php 
+            $inactive_start = new DateTime($file["jadwal_inaktif"]);
+            $today = new DateTime();
+            $inactive_end = clone $inactive_start;
+            $inactive_end->modify('+3 days');
+
+            if ($today >= $inactive_start && $today < $inactive_end) {
+                $diff = $today->diff($inactive_end);
+                echo htmlspecialchars($diff->days . " hari tersisa");
+            } elseif ($today >= $inactive_end) {
+                echo "Masa inaktif berakhir";
+            } else {
+                echo "Belum memasuki masa inaktif";
+            }
+            ?>
+            <td>
+            <?php 
+                $today = new DateTime();
+                $aktif_start = new DateTime($file["jadwal_aktif"]);
                 $inactive_start = new DateTime($file["jadwal_inaktif"]);
-                $inactive_end = (clone $inactive_start)->modify('+3 days'); // Ubah menjadi 3 hari
-                $inactive_interval = $inactive_start->diff($inactive_end);
+                $destroy_start = (clone $inactive_start)->modify('+1 year');
 
-                echo htmlspecialchars($inactive_interval->d > 0 ? $inactive_interval->d . " hari" : "0 hari");
-                ?>
-            </td>
-
-            <td><?php echo htmlspecialchars($file["status_arsip"]); ?></td>
+                if ($today >= $aktif_start && $today < $inactive_start) {
+                    echo '<span class="badge badge-success text-dark">Aktif</span>';
+                } elseif ($today >= $inactive_start && $today < $destroy_start) {
+                    echo '<span class="badge badge-warning text-dark">Inaktif</span>';
+                } else {
+                    echo '<span class="badge badge-danger text-dark">Dimusnahkan</span>';
+                }
+            ?></td>
             <td><?php echo htmlspecialchars($file["keterangan"]); ?></td>
             <td><?php echo htmlspecialchars($file["lokasi_rak"]); ?></td>
             <td><?php echo htmlspecialchars($file["lokasi_shelf"]); ?></td>

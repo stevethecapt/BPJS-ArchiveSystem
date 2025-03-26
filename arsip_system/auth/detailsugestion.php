@@ -48,31 +48,56 @@ if (!$file) {
         <tr><th>Jumlah</th><td><?php echo htmlspecialchars($file["jumlah"]); ?></td></tr>
         <tr><th>Satuan</th><td><?php echo htmlspecialchars($file["satuan"]); ?></td></tr>
         <tr><th>Tingkat Perkembangan</th><td><?php echo htmlspecialchars($file["tingkat_perkembangan"]); ?></td></tr>
-        <tr><th>Masa Aktif</th><td><?php 
-                $start_date = new DateTime($file["jadwal_aktif"]);
-                $end_date = new DateTime($file["jadwal_inaktif"]);
-                $interval = $start_date->diff($end_date);
-                $masa_aktif = "";
-                if ($interval->y > 0) {
-                    $masa_aktif .= $interval->y . " tahun ";
-                }
-                if ($interval->m > 0) {
-                    $masa_aktif .= $interval->m . " bulan ";
-                }
-                if ($interval->d > 0) {
-                    $masa_aktif .= $interval->d . " hari";
-                }
-                echo htmlspecialchars(trim($masa_aktif));
-                ?></td></tr>
-        <tr><th>Masa Inaktif</th><td><?php 
-                $inactive_start = new DateTime($file["jadwal_inaktif"]);
-                $inactive_end = (clone $inactive_start)->modify('+1 year');
-                $inactive_interval = $inactive_start->diff($inactive_end);
+        <tr><th>Masa Aktif</th><td>
+                        <?php 
+                        $start_date = new DateTime($file["jadwal_aktif"]);
+                        $end_date = new DateTime($file["jadwal_inaktif"]);
+                        $interval = $start_date->diff($end_date);
+                        $masa_aktif = "";
+                        if ($interval->y > 0) {
+                            $masa_aktif .= $interval->y . " tahun ";
+                        }
+                        if ($interval->m > 0) {
+                            $masa_aktif .= $interval->m . " bulan ";
+                        }
+                        if ($interval->d > 0) {
+                            $masa_aktif .= $interval->d . " hari";
+                        }
+                        echo htmlspecialchars(trim($masa_aktif));
+                        ?>
+                    </td></tr>
+        <tr><th>Masa Inaktif</th><td>
+        <?php 
+        $inactive_start = new DateTime($file["jadwal_inaktif"]);
+        $today = new DateTime();
+        $inactive_end = clone $inactive_start;
+        $inactive_end->modify('+3 days'); // Masa inaktif hanya 3 hari setelah jadwal inaktif
 
-                echo htmlspecialchars($inactive_interval->y > 0 ? $inactive_interval->y . " tahun " : "") .
-                    htmlspecialchars($inactive_interval->m > 0 ? $inactive_interval->m . " bulan" : "");
-                ?></td></tr>
-        <tr><th>Status</th><td><?php echo htmlspecialchars($file["status_arsip"]); ?></td></tr>
+        if ($today >= $inactive_start && $today < $inactive_end) {
+            $diff = $today->diff($inactive_end);
+            echo htmlspecialchars($diff->days . " hari tersisa");
+        } elseif ($today >= $inactive_end) {
+            echo "Masa inaktif berakhir";
+        } else {
+            echo "Belum memasuki masa inaktif";
+        }
+        ?></td></tr>
+        <tr><th>Status</th><td>
+            <?php 
+            $today = new DateTime();
+            $aktif_start = new DateTime($file["jadwal_aktif"]);
+            $inactive_start = new DateTime($file["jadwal_inaktif"]);
+            $destroy_start = (clone $inactive_start)->modify('+1 year');
+
+            if ($today >= $aktif_start && $today < $inactive_start) {
+                echo '<span class="badge badge-success text-dark">Aktif</span>';
+            } elseif ($today >= $inactive_start && $today < $destroy_start) {
+                echo '<span class="badge badge-warning text-dark">Inaktif</span>';
+            } else {
+                echo '<span class="badge badge-danger text-dark">Dimusnahkan</span>';
+            }
+            ?>
+        </td></tr>
         <tr><th>Keterangan</th><td><?php echo htmlspecialchars($file["keterangan"]); ?></td></tr>
         <tr><th>Lokasi Rak</th><td><?php echo htmlspecialchars($file["lokasi_rak"]); ?></td></tr>
         <tr><th>Lokasi Shelf</th><td><?php echo htmlspecialchars($file["lokasi_shelf"]); ?></td></tr>

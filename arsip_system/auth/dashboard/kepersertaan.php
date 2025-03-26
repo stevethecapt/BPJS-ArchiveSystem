@@ -27,7 +27,7 @@ try {
 </head>
 <body>
     <nav>
-        <img src="img/bpjs.png" class="img" alt="logo">
+        <img src="img/bpjs.png" class="img">
         <div class="top-right">
             <a href="logout.php" class="logoutbtn">Logout</a>
             <span class="username">

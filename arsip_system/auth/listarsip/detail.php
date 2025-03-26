@@ -14,7 +14,6 @@ try {
     } elseif ($type === 'pemusnahan') {
         $query = "SELECT * FROM arsip WHERE jadwal_inaktif <= DATE_SUB(CURDATE(), INTERVAL 3 DAY) ORDER BY jadwal_inaktif ASC";
     }
-
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -103,32 +102,38 @@ try {
                         ?>
                     </td>
                     <td>
-                        <?php 
-                        $inactive_start = new DateTime($file["jadwal_inaktif"]);
-                        $today = new DateTime();
-                        $diff = $today->diff($inactive_start);
+                    <?php 
+                    $inactive_start = new DateTime($file["jadwal_inaktif"]);
+                    $today = new DateTime();
+                    $inactive_end = clone $inactive_start;
+                    $inactive_end->modify('+3 days'); // Masa inaktif hanya 3 hari setelah jadwal inaktif
 
-                        if ($diff->days <= 3 && $today >= $inactive_start) {
-                            echo htmlspecialchars($diff->days . " hari");
-                        } else {
-                            echo "Masa inaktif berakhir";
-                        }
-                        ?>
+                    if ($today >= $inactive_start && $today < $inactive_end) {
+                        $diff = $today->diff($inactive_end);
+                        echo htmlspecialchars($diff->days . " hari tersisa");
+                    } elseif ($today >= $inactive_end) {
+                        echo "Masa inaktif berakhir";
+                    } else {
+                        echo "Belum memasuki masa inaktif";
+                    }
+                    ?>
                     </td>
                     <td>
-                        <?php 
+                    <?php 
                         $today = new DateTime();
                         $aktif_start = new DateTime($file["jadwal_aktif"]);
                         $inactive_start = new DateTime($file["jadwal_inaktif"]);
+                        $destroy_start = (clone $inactive_start)->modify('+1 year');
 
                         if ($today >= $aktif_start && $today < $inactive_start) {
                             echo '<span class="badge badge-success text-dark">Aktif</span>';
+                        } elseif ($today >= $inactive_start && $today < $destroy_start) {
+                            echo '<span class="badge badge-warning text-dark">Inaktif</span>';
                         } else {
-                            echo '<span class="badge badge-danger text-dark">Inaktif</span>';
+                            echo '<span class="badge badge-danger text-dark">Dimusnahkan</span>';
                         }
-                        ?>
+                    ?>
                     </td>
-
                     <td><?php echo htmlspecialchars($file["keterangan"]); ?></td>
                     <td><?php echo htmlspecialchars($file["lokasi_rak"]); ?></td>
                     <td><?php echo htmlspecialchars($file["lokasi_shelf"]); ?></td>

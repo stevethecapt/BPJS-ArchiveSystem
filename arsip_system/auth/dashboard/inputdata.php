@@ -172,7 +172,7 @@ echo "<script>showMessage('" . htmlspecialchars($message) . "', '" . $status . "
 }
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #339cff;
     display: flex;
     justify-content: center;
     align-items: center;
