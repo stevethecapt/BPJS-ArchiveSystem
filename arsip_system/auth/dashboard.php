@@ -100,9 +100,9 @@ $recentFiles = $stmtRecentFiles->fetchAll(PDO::FETCH_ASSOC);
             </p>
             <p style="font-size: 14px; color: #666;">
                 <?php echo isset($_SESSION['phone']) ? htmlspecialchars($_SESSION['phone']) : 'Your Number'; ?>
-            </p>
+            </p>            
             <p style="font-size: 14px; color: #666;">
-                <?php echo isset($_SESSION['address']) ? htmlspecialchars($_SESSION['address']) : 'Your Address'; ?>
+                <?php echo isset($_SESSION['bidang']) ? htmlspecialchars($_SESSION['bidang']) : 'Bidang'; ?>
             </p>
 
             <a href="profile/profile.php" style="display: block; background: #008CBA; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 10px;">Update Profile</a>

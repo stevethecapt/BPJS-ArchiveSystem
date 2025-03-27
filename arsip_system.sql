@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 26, 2025 at 10:05 AM
+-- Generation Time: Mar 27, 2025 at 10:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -70,24 +70,23 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `fullname` varchar(255) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `address` text NOT NULL,
   `email` varchar(100) NOT NULL,
+  `jenis_kelamin` enum('Laki-laki','Perempuan') DEFAULT NULL,
+  `bidang` enum('SDM Umum dan Komunikasi','Perencanaan dan Keuangan','Kepesertaan dan Mutu Layanan','Jaminan Pelayanan Kesehatan') DEFAULT NULL,
+  `address` text NOT NULL,
   `password` varchar(255) NOT NULL,
-  `bidang` enum('SDM Umum dan Komunikasi','Perencanaan dan Keuangan','Kepesertaan dan Mutu Layanan','Jaminan Pelayanan Kesehatan') NOT NULL
+  `tanggal_lahir` date DEFAULT NULL,
+  `phone` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `fullname`, `phone`, `address`, `email`, `password`, `bidang`) VALUES
-(49, 'stevekevins', '', '', '', 'stevekevins@gmail.com', '$2y$10$krFV88fKsjaRon2cWJn7PO2L1tHnsfojL1ELk/zmwdbJXA4wFKF6i', ''),
-(50, 'girikanan', '', '', '', 'girikanan@gmail.com', '$2y$10$FmeVK2i9OxwT12YwNzOKOuzG/tnwud69ZomTRC2/3xNS/whyX2pzy', ''),
-(51, 'chris', '', '', '', 'chris@gmail.com', '$2y$10$Ia43iaU6frjwdSZJVblg5O2cYgrfcF0WgftS/lXjpg4KS8CIa3qmm', ''),
-(52, 'stevenk', '', '', '', 'stvenkvn@gmail.com', '$2y$10$3suJJ2ZIDcKAKnSVPEHHjeZq5rr1gg4t4FTLfof27dRbXhar8mFfa', ''),
-(53, 'ken', '', '', '', 'ken@gmail.com', '$2y$10$bsBJrF7w76pMDzJIDYfYpeAPTeUkiSYSZjo5DZMfHn1vkaqe7.lsW', ''),
-(54, 'stevekevin', 'steve kevin', '', '', 'steven@gmail.com', '$2y$10$/2UkDZUgBm1y2sdb.vPLKuIB.b7nfeI.xR17V9fZeIwe28i/.ds5.', 'SDM Umum dan Komunikasi');
+INSERT INTO `users` (`id`, `username`, `fullname`, `email`, `jenis_kelamin`, `bidang`, `address`, `password`, `tanggal_lahir`, `phone`) VALUES
+(56, 'stevekevins', 'steve kevins', 'stevekevins@gmail.com', NULL, NULL, '', '$2y$10$OxPFFjXxeFPcMLf18k/Ctelr2I2aR5rL3xw5Lw/ZEOOKlTwbiae9W', NULL, ''),
+(57, 'stevekevins', 'steve kevin', 'stevekevins@gmail.com', 'Laki-laki', 'SDM Umum dan Komunikasi', 'kota manado', '', '2025-03-20', '081342215292'),
+(58, 'stevekevins', 'steve kevins', 'stevekevins@gmail.com', 'Laki-laki', 'SDM Umum dan Komunikasi', 'kota sorong', '', '2025-03-12', '081342215292');
 
 --
 -- Indexes for dumped tables
@@ -119,7 +118,7 @@ ALTER TABLE `arsip`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
