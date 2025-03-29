@@ -4,16 +4,12 @@ require_once("../../config/database.php");
 
 $message = "";
 $status = "";
-
-// Pastikan user sudah login
 if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit();
 }
 
 $user_id = $_SESSION['id_user'];
-
-// Ambil data user dari database
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -22,7 +18,6 @@ if (!$user) {
     die("User tidak ditemukan.");
 }
 
-// Jika form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fullname = trim($_POST['fullname'] ?? "");
     $username = trim($_POST['username'] ?? "");
@@ -41,8 +36,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($success) {
                 $message = "Profil berhasil diperbarui.";
                 $status = "success";
-
-                // Ambil data terbaru setelah update
                 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
                 $stmt->execute([$user_id]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -94,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 <nav>
-    <img src="img/bpjs.png" class="img">
+    <img src="../../img/bpjs.png" class="img">
     <div class="top-right">
         <a href="javascript:void(0);" onclick="toggleProfilePopup()" style="text-decoration: none; color: black; font-weight: bold;">
             <?php if (isset($_SESSION['username'])): ?>
@@ -109,35 +102,76 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p class="error-message"><?php echo $message; ?></p>
     <?php endif; ?>
     <form method="post">
-        <div class="form-row">
-            <div class="form-column">
-                <input type="text" name="fullname" class="form-control" value="<?php echo htmlspecialchars($user['fullname']); ?>" placeholder="Nama Lengkap" required>
-                <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($user['username']); ?>"placeholder="Username">                
-                <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" placeholder="Email">
-                <input type="text" name="phone" class="form-control" value="<?php echo htmlspecialchars($user['phone']); ?>" placeholser="Phone" required>
+        <form action="profile.php" method="post" enctype="multipart/form-data">
+            <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="position: relative; width: 100px; height: 100px; margin: auto;">
+                            <img id="profilePreview" 
+                                src="<?php echo !empty($user['profile_picture']) ? htmlspecialchars($user['profile_picture']) : 'upload/profile_picture/default.png'; ?>" 
+                                style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background: grey; aspect-ratio: 1/1;">
+                            <label for="profile_picture" 
+                                style="position: absolute; bottom: 0; right: 0; background: #4CAF50; 
+                                        width: 25px; height: 25px; border-radius: 50%; color: white; 
+                                        text-align: center; font-size: 18px; cursor: pointer; line-height: 25px;">
+                                +
+                            </label>
+                            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                    </div>
+                </div>
+                <script>
+                function previewImage(event) {
+                    const input = event.target;
+                    const reader = new FileReader();
+                    
+                    reader.onload = function() {
+                        const imgElement = document.getElementById('profilePreview');
+                        imgElement.src = reader.result;
+                    };
+                    
+                    if (input.files && input.files[0]) {
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
+                </script>
+            <div class="form-row">
+                <div class="form-column">
+                    <input type="text" name="fullname" class="form-control" value="<?php echo htmlspecialchars($user['fullname']); ?>" placeholder="Nama Lengkap" required>
+                    <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($user['username']); ?>"placeholder="Username">                
+                    <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" placeholder="Email">
+                    <input type="text" name="phone" class="form-control" value="<?php echo htmlspecialchars($user['phone']); ?>" placeholser="Phone" required>
+                </div>
+                <div class="form-column">
+                    <input type="date" name="tanggal_lahir" class="form-control" value="<?php echo htmlspecialchars($user['tanggal_lahir']); ?>">
+                    <select name="jenis_kelamin">
+                        <option value="">Pilih Jenis Kelamin</option>
+                        <option value="Laki-laki" <?php echo ($user['jenis_kelamin'] == "Laki-laki") ? 'selected' : ''; ?>>Laki-laki</option>
+                        <option value="Perempuan" <?php echo ($user['jenis_kelamin'] == "Perempuan") ? 'selected' : ''; ?>>Perempuan</option>
+                    </select>
+                    <select name="bidang">
+                        <option value="">Pilih Bidang (Opsional)</option>
+                        <option value="SDM Umum dan Komunikasi" <?php echo ($user['bidang'] == "SDM Umum dan Komunikasi") ? 'selected' : ''; ?>>SDM, Umum dan Komunikasi</option>
+                        <option value="Perencanaan dan Keuangan" <?php echo ($user['bidang'] == "Perencanaan dan Keuangan") ? 'selected' : ''; ?>>Perencanaan dan Keuangan</option>
+                        <option value="Kepesertaan dan Mutu Layanan" <?php echo ($user['bidang'] == "Kepesertaan dan Mutu Layanan") ? 'selected' : ''; ?>>Kepesertaan dan Mutu Layanan</option>
+                        <option value="Jaminan Pelayanan Kesehatan" <?php echo ($user['bidang'] == "Jaminan Pelayanan Kesehatan") ? 'selected' : ''; ?>>Jaminan Pelayanan Kesehatan</option>
+                    </select>
+                    <textarea name="address" class="form-control" required><?php echo htmlspecialchars($user['address']); ?></textarea>
+                </div>
             </div>
-            <div class="form-column">
-                <input type="date" name="tanggal_lahir" class="form-control" value="<?php echo htmlspecialchars($user['tanggal_lahir']); ?>">
-                <select name="jenis_kelamin">
-                    <option value="">Pilih Jenis Kelamin</option>
-                    <option value="Laki-laki" <?php echo ($user['jenis_kelamin'] == "Laki-laki") ? 'selected' : ''; ?>>Laki-laki</option>
-                    <option value="Perempuan" <?php echo ($user['jenis_kelamin'] == "Perempuan") ? 'selected' : ''; ?>>Perempuan</option>
-                </select>
-                <select name="bidang">
-                    <option value="">Pilih Bidang (Opsional)</option>
-                    <option value="SDM Umum dan Komunikasi" <?php echo ($user['bidang'] == "SDM Umum dan Komunikasi") ? 'selected' : ''; ?>>SDM, Umum dan Komunikasi</option>
-                    <option value="Perencanaan dan Keuangan" <?php echo ($user['bidang'] == "Perencanaan dan Keuangan") ? 'selected' : ''; ?>>Perencanaan dan Keuangan</option>
-                    <option value="Kepesertaan dan Mutu Layanan" <?php echo ($user['bidang'] == "Kepesertaan dan Mutu Layanan") ? 'selected' : ''; ?>>Kepesertaan dan Mutu Layanan</option>
-                    <option value="Jaminan Pelayanan Kesehatan" <?php echo ($user['bidang'] == "Jaminan Pelayanan Kesehatan") ? 'selected' : ''; ?>>Jaminan Pelayanan Kesehatan</option>
-                </select>
-                <textarea name="address" class="form-control" required><?php echo htmlspecialchars($user['address']); ?></textarea>
-            </div>
-        </div>
-        <button href="../dashboard.php" class="button" type="submit">Update</button>
+            <button href="../dashboard.php" class="button" type="submit">Update</button>
+        </form>
     </form>
 </div>
 </body>
 </html>
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = document.getElementById('profilePreview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
 <style>
     * {
         margin: 0;
@@ -152,6 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         align-items: center;
         height: 100vh;
         overflow-y: auto;
+        margin-top: 20px;
     }
     nav {
         width: 100%;
@@ -168,8 +203,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     .img {
         height: 38px;
-        width: 180px;
-        object-fit: cover;
+        width: 200px;
+        object-fit: fit;
     }
 
     .form-row {
@@ -180,6 +215,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         flex: 1;
         display: flex;
         flex-direction: column;
+        margin-top: 20px;
     }
     .form-column input, .form-column select, .form-column textarea {
         width: 100%;

@@ -27,13 +27,35 @@ try {
 </head>
 <body>
     <nav>
-        <img src="img/bpjs.png" class="img">
+        <img src="../../img/bpjs.png" class="img">
         <div class="top-right">
-            <a href="logout.php" class="logoutbtn">Logout</a>
-            <span class="username">
-                <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?>
-            </span>
-        </div>
+        <a href="javascript:void(0);" onclick="toggleProfilePopup()" style="text-decoration: none; color: black; font-weight: bold;">
+            <?php if (isset($_SESSION['username'])): ?>
+                <?php echo htmlspecialchars($_SESSION['username']); ?>
+            <?php endif; ?>
+        </a>
+        <div id="profilePopup" style="display: none; position: absolute; top: 70px; right: 0; width: 250px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center;">
+        <p style="font-size: 18px; font-weight: bold; margin-top: 10px;">
+            <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
+        </p>
+        <p style="font-size: 14px; color: #666;">
+            <?php echo htmlspecialchars($user['email'] ?? 'example@youremail.com'); ?>
+        </p>
+        <p style="font-size: 14px; color: #666;">
+            <?php echo htmlspecialchars($user['phone'] ?? 'Your Number'); ?>
+        </p>            
+        <p style="font-size: 14px; color: #666;">
+            <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
+        </p>
+        <a href="profile/profile.php" style="display: block; background: #008CBA; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 10px;">Update Profile</a>
+        <a href="logout.php" style="display: block; background: #f44336; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 5px;">Logout</a>
+    </div>
+    <script>
+        function toggleProfilePopup() {
+            var popup = document.getElementById("profilePopup");
+            popup.style.display = (popup.style.display === "none" || popup.style.display === "") ? "block" : "none";
+        }
+    </script>
     </nav>
 
     <div class="sidebar">
@@ -105,8 +127,8 @@ nav {
 }
 img {
     height: 38px;
-    width: 180px;
-    object-fit: cover;
+    width: 200px;
+    object-fit: fit;
 }
 .top-right {
     display: flex;

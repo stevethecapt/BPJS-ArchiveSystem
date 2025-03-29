@@ -72,6 +72,5 @@ if ($search !== '') {
             </table>
         </div>
 </div>
-<a href="dashboard.php">Kembali ke Dashboard</a>
 </body>
 </html>

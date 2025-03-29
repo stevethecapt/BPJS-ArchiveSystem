@@ -68,7 +68,7 @@ echo "<script>showMessage('" . htmlspecialchars($message) . "', '" . $status . "
     
 <body>
     <nav>
-        <img src="img/bpjs.png" class="img" alt="logo">
+        <img src="../../img/bpjs.png" class="img" alt="logo">
         <div class="top-right">
             <a href="logout.php" class="logoutbtn">Logout</a>
             <span class="username">
@@ -196,8 +196,8 @@ nav {
 
 nav .img {
     height: 38px;
-    width: 180px;
-    object-fit: cover;
+    width: 200px;
+    object-fit: fit;
 }
 
 .top-right {

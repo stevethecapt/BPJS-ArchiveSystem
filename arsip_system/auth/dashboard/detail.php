@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once("../../config/database.php");
 if (!isset($_GET['bidang'])) {
     die("Bidang tidak ditemukan.");
@@ -39,6 +40,9 @@ if (isset($_GET['id'])) {
     <title>Detail Arsip</title>
 </head>
 <body>
+<nav>
+    <img src="../../img/bpjs.png" class="img">
+</nav>
     <h2>Daftar Arsip <?php echo ($bidang == "Total") ? "Total Arsip" : "Bidang $bidang"; ?> Kedeputian Wilayah X BPJS Kesehatan</h2>
     <table border="1">
         <tr>
@@ -152,6 +156,39 @@ if (isset($_GET['id'])) {
         font-family: Arial, sans-serif;
         margin: 20px;
         text-align: center;
+        padding-top: 70px;
+    }
+
+    nav {
+        width: 100%;
+        background: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 15px 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        z-index: 1000;
+    }
+
+    .img {
+        height: 38px;
+        width: 200px;
+        object-fit: fit;
+    }
+
+    .top-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-right: 40px;
+    }
+
+    .username {
+        font-weight: bold;
+        font-size: 1rem;
+        color: #333;
     }
 
     form {

@@ -56,7 +56,7 @@ if ($search !== '') {
 } else {
     $result = false;
 }
-// Baru saja ditambahkan 
+
 $sqlRecentFiles = "SELECT * FROM arsip ORDER BY upload_date DESC LIMIT 5";
 $stmtRecentFiles = $pdo->prepare($sqlRecentFiles);
 $stmtRecentFiles->execute();
@@ -79,7 +79,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 </head>
 <body>
 <nav>
-    <img src="img/bpjs.png" class="img">
+    <img src="../img/bpjs.png" class="img">
     <div class="top-right">
         <form method="GET" action="search.php" style="position: relative;">
             <input type="text" id="search" name="search" placeholder="Cari arsip..." autocomplete="off"
@@ -95,9 +95,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </a>
         <div id="profilePopup" style="display: none; position: absolute; top: 75px; right: 0; width: 250px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center;">
-        <div style="width: 80px; height: 80px; background: #ddd; border-radius: 50%; margin: auto; position: relative;">
-            <span style="position: absolute; bottom: 0; right: 0; background: #4CAF50; width: 20px; height: 20px; border-radius: 50%; font-size: 14px; color: white; text-align: center;">+</span>
-        </div>
         <p style="font-size: 18px; font-weight: bold; margin-top: 10px;">
             <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
         </p>
@@ -263,8 +260,8 @@ nav {
 
 .img {
     height: 38px;
-    width: 180px;
-    object-fit: cover;
+    width: 200px;
+    object-fit: fit;
 }
 
 .top-right {

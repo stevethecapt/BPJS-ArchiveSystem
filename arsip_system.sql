@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 27, 2025 at 10:22 PM
+-- Generation Time: Mar 29, 2025 at 06:26 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -76,17 +76,16 @@ CREATE TABLE `users` (
   `address` text NOT NULL,
   `password` varchar(255) NOT NULL,
   `tanggal_lahir` date DEFAULT NULL,
-  `phone` varchar(15) NOT NULL
+  `phone` varchar(15) NOT NULL,
+  `profile_picture` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `fullname`, `email`, `jenis_kelamin`, `bidang`, `address`, `password`, `tanggal_lahir`, `phone`) VALUES
-(56, 'stevekevins', 'steve kevins', 'stevekevins@gmail.com', NULL, NULL, '', '$2y$10$OxPFFjXxeFPcMLf18k/Ctelr2I2aR5rL3xw5Lw/ZEOOKlTwbiae9W', NULL, ''),
-(57, 'stevekevins', 'steve kevin', 'stevekevins@gmail.com', 'Laki-laki', 'SDM Umum dan Komunikasi', 'kota manado', '', '2025-03-20', '081342215292'),
-(58, 'stevekevins', 'steve kevins', 'stevekevins@gmail.com', 'Laki-laki', 'SDM Umum dan Komunikasi', 'kota sorong', '', '2025-03-12', '081342215292');
+INSERT INTO `users` (`id`, `username`, `fullname`, `email`, `jenis_kelamin`, `bidang`, `address`, `password`, `tanggal_lahir`, `phone`, `profile_picture`) VALUES
+(56, 'stevekevins', 'steve kevin', 'stevekevin@gmail.com', 'Laki-laki', 'SDM Umum dan Komunikasi', 'Kota Manado', '$2y$10$OxPFFjXxeFPcMLf18k/Ctelr2I2aR5rL3xw5Lw/ZEOOKlTwbiae9W', '2025-03-06', '0812345678', NULL);
 
 --
 -- Indexes for dumped tables
