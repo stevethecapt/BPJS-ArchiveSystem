@@ -1,12 +1,29 @@
 <?php
+session_start();
 require_once("../../config/database.php");
 
 $message = "";
 $status = "";
 
-// Mengecek apakah form telah disubmit
+// Pastikan user sudah login
+if (!isset($_SESSION['id_user'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+$user_id = $_SESSION['id_user'];
+
+// Ambil data user dari database
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    die("User tidak ditemukan.");
+}
+
+// Jika form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Mengambil data dari form
     $fullname = trim($_POST['fullname'] ?? "");
     $username = trim($_POST['username'] ?? "");
     $email = trim($_POST['email'] ?? "");
@@ -16,22 +33,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $bidang = trim($_POST['bidang'] ?? "");
     $address = trim($_POST['address'] ?? "");
 
-    // Validasi: Pastikan kolom yang wajib diisi tidak kosong
     if (!empty($fullname) && !empty($phone) && !empty($address)) {
         try {
-            // Cek apakah data sudah ada untuk update atau insert data baru
-            if (isset($_POST['user_id']) && !empty($_POST['user_id'])) {
-                // Update data jika ada user_id
-                $stmt = $pdo->prepare("UPDATE users SET fullname = ?, username = ?, email = ?, phone = ?, tanggal_lahir = ?, jenis_kelamin = ?, bidang = ?, address = ? WHERE id = ?");
-                $success = $stmt->execute([$fullname, $username, $email, $phone, $tanggal_lahir, $jenis_kelamin, $bidang, $address, $_POST['user_id']]);
-                $message = $success ? "Profil berhasil diperbarui." : "Gagal memperbarui profil.";
+            $stmt = $pdo->prepare("UPDATE users SET fullname = ?, username = ?, email = ?, phone = ?, tanggal_lahir = ?, jenis_kelamin = ?, bidang = ?, address = ? WHERE id = ?");
+            $success = $stmt->execute([$fullname, $username, $email, $phone, $tanggal_lahir, $jenis_kelamin, $bidang, $address, $user_id]);
+
+            if ($success) {
+                $message = "Profil berhasil diperbarui.";
+                $status = "success";
+
+                // Ambil data terbaru setelah update
+                $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+                $stmt->execute([$user_id]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
             } else {
-                // Insert data baru jika user_id tidak ada
-                $stmt = $pdo->prepare("INSERT INTO users (fullname, username, email, phone, tanggal_lahir, jenis_kelamin, bidang, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                $success = $stmt->execute([$fullname, $username, $email, $phone, $tanggal_lahir, $jenis_kelamin, $bidang, $address]);
-                $message = $success ? "Profil berhasil dibuat." : "Gagal membuat profil.";
+                $message = "Gagal memperbarui profil.";
+                $status = "error";
             }
-            $status = $success ? "success" : "error";
         } catch (PDOException $e) {
             $message = "Terjadi kesalahan database: " . $e->getMessage();
             $status = "error";
@@ -42,7 +60,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -94,26 +111,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <form method="post">
         <div class="form-row">
             <div class="form-column">
-                <input type="text" name="fullname" placeholder="Nama Lengkap" required>
-                <input type="text" name="username" placeholder="Username (Opsional)">
-                <input type="email" name="email" placeholder="Email (Opsional)">
-                <input type="text" name="phone" placeholder="Nomor Telepon" required>
+                <input type="text" name="fullname" class="form-control" value="<?php echo htmlspecialchars($user['fullname']); ?>" placeholder="Nama Lengkap" required>
+                <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($user['username']); ?>"placeholder="Username">                
+                <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>" placeholder="Email">
+                <input type="text" name="phone" class="form-control" value="<?php echo htmlspecialchars($user['phone']); ?>" placeholser="Phone" required>
             </div>
             <div class="form-column">
-                <input type="date" name="tanggal_lahir" placeholder="Tanggal Lahir">
+                <input type="date" name="tanggal_lahir" class="form-control" value="<?php echo htmlspecialchars($user['tanggal_lahir']); ?>">
                 <select name="jenis_kelamin">
                     <option value="">Pilih Jenis Kelamin</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
+                    <option value="Laki-laki" <?php echo ($user['jenis_kelamin'] == "Laki-laki") ? 'selected' : ''; ?>>Laki-laki</option>
+                    <option value="Perempuan" <?php echo ($user['jenis_kelamin'] == "Perempuan") ? 'selected' : ''; ?>>Perempuan</option>
                 </select>
                 <select name="bidang">
                     <option value="">Pilih Bidang (Opsional)</option>
-                    <option value="SDM Umum dan Komunikasi">SDM, Umum dan Komunikasi</option>
-                    <option value="Perencanaan dan Keuangan">Perencanaan dan Keuangan</option>
-                    <option value="Kepesertaan dan Mutu Layanan">Kepesertaan dan Mutu Layanan</option>
-                    <option value="Jaminan Pelayanan Kesehatan">Jaminan Pelayanan Kesehatan</option>
+                    <option value="SDM Umum dan Komunikasi" <?php echo ($user['bidang'] == "SDM Umum dan Komunikasi") ? 'selected' : ''; ?>>SDM, Umum dan Komunikasi</option>
+                    <option value="Perencanaan dan Keuangan" <?php echo ($user['bidang'] == "Perencanaan dan Keuangan") ? 'selected' : ''; ?>>Perencanaan dan Keuangan</option>
+                    <option value="Kepesertaan dan Mutu Layanan" <?php echo ($user['bidang'] == "Kepesertaan dan Mutu Layanan") ? 'selected' : ''; ?>>Kepesertaan dan Mutu Layanan</option>
+                    <option value="Jaminan Pelayanan Kesehatan" <?php echo ($user['bidang'] == "Jaminan Pelayanan Kesehatan") ? 'selected' : ''; ?>>Jaminan Pelayanan Kesehatan</option>
                 </select>
-                <textarea name="address" placeholder="Alamat" required></textarea>
+                <textarea name="address" class="form-control" required><?php echo htmlspecialchars($user['address']); ?></textarea>
             </div>
         </div>
         <button href="../dashboard.php" class="button" type="submit">Update</button>

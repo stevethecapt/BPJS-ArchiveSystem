@@ -6,15 +6,19 @@ $message = "";
 $status = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username'] ?? "");
+    $password = trim($_POST['password'] ?? "");
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['username'] = $username;
+        session_regenerate_id(true);
+        $_SESSION['id_user'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        ini_set('session.gc_maxlifetime', 3600);
+        session_set_cookie_params(3600);
         header("Location: dashboard.php");
         exit();
     } else {
