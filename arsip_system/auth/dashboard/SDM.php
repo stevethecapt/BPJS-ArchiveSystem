@@ -16,8 +16,11 @@ try {
 } catch (PDOException $e) {
     die("Error: " . $e->getMessage());
 }
+$user_id = $_SESSION['id_user'];
+$stmt = $pdo->prepare("SELECT fullname, username, email, phone, bidang FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -35,16 +38,16 @@ try {
             <?php endif; ?>
         </a>
         <div id="profilePopup" style="display: none; position: absolute; top: 70px; right: 0; width: 250px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center;">
-        <p style="font-size: 18px; font-weight: bold; margin-top: 10px;">
+        <p style="font-size: 18px; font-weight: bold; margin-top: 10px; margin-bottom: 12px;">
             <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
         </p>
-        <p style="font-size: 14px; color: #666;">
+        <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
             <?php echo htmlspecialchars($user['email'] ?? 'example@youremail.com'); ?>
         </p>
-        <p style="font-size: 14px; color: #666;">
+        <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
             <?php echo htmlspecialchars($user['phone'] ?? 'Your Number'); ?>
         </p>            
-        <p style="font-size: 14px; color: #666;">
+        <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
             <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
         </p>
         <a href="profile/profile.php" style="display: block; background: #008CBA; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 10px;">Update Profile</a>
@@ -95,7 +98,7 @@ try {
         <div class="btn-container">
             <a href="inputdata.php" class="inputbtn">Input</a>
             <a href="detail.php?bidang=<?php echo urlencode($bidang); ?>" class="btn-info">Detail</a>
-            <a href="" class="downloadbtn">Download</a>
+            <a href="../export_excel.php?bidang=<?php echo urlencode($bidang);?>" class="downloadbtn">Download</a>
         </div>
     </div>
 </body>
@@ -127,7 +130,7 @@ nav {
 }
 .img {
     height: 38px;
-    width: 200px;
+    width: 210px;
     object-fit: fit;
 }
 .top-right {

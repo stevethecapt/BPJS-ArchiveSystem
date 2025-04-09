@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php endif; ?>
 
     <nav>
-        <img src="bpjs.png" class="img" alt="logo">
+        <img src="../img/bpjs.png" class="img" alt="logo">
         <div class="top-right">
             <span class="registtext">Don't have an Account?</span>
             <a href="register.php" class="regist">Register</a>
@@ -93,10 +93,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     nav .img {
         height: 38px; 
-        width: 180px;
+        width: 210px;
         margin-right: 15px;
         display: block;
-        object-fit: cover;
+        object-fit: fit;
+        margin-left: 20px;
     }
 
     .top-right {

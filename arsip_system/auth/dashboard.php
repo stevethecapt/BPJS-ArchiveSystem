@@ -63,7 +63,6 @@ $stmtRecentFiles->execute();
 $recentFiles = $stmtRecentFiles->fetchAll(PDO::FETCH_ASSOC);
 
 $user_id = $_SESSION['id_user'];
-
 $stmt = $pdo->prepare("SELECT fullname, username, email, phone, bidang FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -78,48 +77,46 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     <title>Dashboard</title>
 </head>
 <body>
-<nav>
-    <img src="../img/bpjs.png" class="img">
-    <div class="top-right">
-        <form method="GET" action="search.php" style="position: relative;">
-            <input type="text" id="search" name="search" placeholder="Cari arsip..." autocomplete="off"
-                style="padding: 10px 35px 10px 15px; border-radius: 15px; border: 1px solid #ccc; outline: none;">
-            <button type="submit" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;">
-                <i class="fa fa-search" style="font-size: 16px; color: #666;"></i>
-            </button>
-            <div id="livesearch" style="position: absolute; background: white; width: 100%; border: 1px solid #ccc; display: none;"></div>
-        </form>
-        <a href="javascript:void(0);" onclick="toggleProfilePopup()" style="text-decoration: none; color: black; font-weight: bold;">
-            <?php if (isset($_SESSION['username'])): ?>
-                <?php echo htmlspecialchars($_SESSION['username']); ?>
-            <?php endif; ?>
-        </a>
-        <div id="profilePopup" style="display: none; position: absolute; top: 75px; right: 0; width: 250px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center;">
-        <p style="font-size: 18px; font-weight: bold; margin-top: 10px;">
-            <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
-        </p>
-        <p style="font-size: 14px; color: #666;">
-            <?php echo htmlspecialchars($user['email'] ?? 'example@youremail.com'); ?>
-        </p>
-        <p style="font-size: 14px; color: #666;">
-            <?php echo htmlspecialchars($user['phone'] ?? 'Your Number'); ?>
-        </p>            
-        <p style="font-size: 14px; color: #666;">
-            <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
-        </p>
-
-        <a href="profile/profile.php" style="display: block; background: #008CBA; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 10px;">Update Profile</a>
-        <a href="logout.php" style="display: block; background: #f44336; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 5px;">Logout</a>
-    </div>
-
-    <script>
-    function toggleProfilePopup() {
-        var popup = document.getElementById("profilePopup");
-        popup.style.display = (popup.style.display === "none" || popup.style.display === "") ? "block" : "none";
-    }
-    </script>
-    </div>
-</nav>
+    <nav>
+        <img src="../img/bpjs.png" class="img">
+        <div class="top-right">
+            <form method="GET" action="search.php" style="position: relative;">
+                <input type="text" id="search" name="search" placeholder="Cari arsip..." autocomplete="off"
+                    style="padding: 10px 35px 10px 15px; border-radius: 15px; border: 1px solid #ccc; outline: none;">
+                <button type="submit" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;">
+                    <i class="fa fa-search" style="font-size: 16px; color: #666;"></i>
+                </button>
+                <div id="livesearch" style="position: absolute; background: white; width: 100%; border: 1px solid #ccc; display: none;"></div>
+            </form>
+            <a href="javascript:void(0);" onclick="toggleProfilePopup()" style="text-decoration: none; color: black; font-weight: bold;">
+                <?php if (isset($_SESSION['username'])): ?>
+                    <?php echo htmlspecialchars($_SESSION['username']); ?>
+                <?php endif; ?>
+            </a>
+            <div id="profilePopup" style="display: none; position: absolute; top: 75px; right: 0; width: 250px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center;">
+            <p style="font-size: 18px; font-weight: bold; margin-top: 10px; margin-bottom: 12px;">
+                <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
+            </p>
+            <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
+                <?php echo htmlspecialchars($user['email'] ?? 'example@youremail.com'); ?>
+            </p>
+            <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
+                <?php echo htmlspecialchars($user['phone'] ?? 'Your Number'); ?>
+            </p>            
+            <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+                <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
+            </p>
+            <a href="profile/profile.php" style="display: block; background: #008CBA; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 10px;">Update Profile</a>
+            <a href="logout.php" style="display: block; background: #f44336; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 5px;">Logout</a>
+        </div>
+        <script>
+        function toggleProfilePopup() {
+            var popup = document.getElementById("profilePopup");
+            popup.style.display = (popup.style.display === "none" || popup.style.display === "") ? "block" : "none";
+        }
+        </script>
+        </div>
+    </nav>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function(){
@@ -260,7 +257,7 @@ nav {
 
 .img {
     height: 38px;
-    width: 200px;
+    width: 210px;
     object-fit: fit;
 }
 

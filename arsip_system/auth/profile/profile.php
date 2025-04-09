@@ -203,7 +203,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     .img {
         height: 38px;
-        width: 200px;
+        width: 210px;
         object-fit: fit;
     }
 

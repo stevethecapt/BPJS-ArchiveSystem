@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <nav>
-        <img src="bpjs.png" class="img" alt="logo">
+        <img src="../img/bpjs.png" class="img" alt="logo">
         <div class="top-right">
         <span class="logintext">Already have an Account?</span>
         <a href="login.php" class="login">Login</a>
@@ -106,10 +106,11 @@ nav {
 
 .img {
     height: 38px; 
-    width: 180px;
+    width: 210px;
     margin-right: 15px;
     display: block;
-    object-fit: cover;
+    object-fit: fit;
+    margin-left: 20px;
 }
 
 .top-right {
