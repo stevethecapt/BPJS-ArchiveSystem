@@ -8,11 +8,10 @@ $status = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username'] ?? "");
     $password = trim($_POST['password'] ?? "");
-
-    $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = ?");
+    $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE LOWER(username) = LOWER(?)");
     $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if ($user && password_verify($password, $user['password'])) {
         session_regenerate_id(true);
         $_SESSION['id_user'] = $user['id'];
@@ -22,33 +21,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: dashboard.php");
         exit();
     } else {
-        $message = "Username atau password salah!";
+        $message = "Login gagal. Username atau password salah.";
         $status = "error";
     }
 }
 ?>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let notif = document.getElementById("notification");
-        if (notif) {
-            notif.style.display = "block"; 
-            setTimeout(function() {
-                notif.style.opacity = "1";
-                let fadeEffect = setInterval(function () {
-                    if (!notif.style.opacity) {
-                        notif.style.opacity = "1";
-                    }
-                    if (notif.style.opacity > "0") {
-                        notif.style.opacity -= "0.1";
-                    } else {
-                        clearInterval(fadeEffect);
-                        notif.style.display = "none";
-                    }
-                }, 100);
-            }, 1000);
-        }
-    });
-</script>
 <!DOCTYPE html>
 <html lang="id">
 <head>

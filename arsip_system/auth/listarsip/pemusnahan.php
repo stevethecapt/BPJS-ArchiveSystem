@@ -1,14 +1,39 @@
 <?php
 require_once("../../config/database.php");
 
-$tanggal_hari_ini = date('Y-m-d');
-$tanggal_batas_pemusnahan = date('Y-m-d', strtotime('-3 days', strtotime($tanggal_hari_ini)));
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_ids'])) {
+    try {
+        // Ambil ID arsip yang dipilih untuk dihapus
+        $delete_ids = $_POST['delete_ids'];
 
-$query = "SELECT * FROM arsip WHERE jadwal_inaktif <= ? ORDER BY jadwal_inaktif ASC";
+        // Persiapkan query untuk menghapus arsip berdasarkan ID
+        $placeholders = rtrim(str_repeat('?,', count($delete_ids)), ',');
+        $query = "DELETE FROM arsip WHERE id IN ($placeholders)";
+        $stmt = $pdo->prepare($query);
+
+        // Eksekusi query untuk menghapus arsip
+        $stmt->execute($delete_ids);
+
+        // Redirect kembali ke halaman pemusnahan setelah berhasil menghapus
+        header("Location: pemusnahan.php");
+        exit;
+
+    } catch (PDOException $e) {
+        // Menangani error jika ada
+        echo "Terjadi kesalahan: " . $e->getMessage();
+    }
+}
+
+// Menampilkan arsip untuk pemusnahan
+$tanggal_hari_ini = date('Y-m-d');
+$query = "SELECT * FROM arsip 
+          WHERE DATE_ADD(jadwal_inaktif, INTERVAL 1 YEAR) < ? 
+          ORDER BY jadwal_inaktif ASC";
 $stmt = $pdo->prepare($query);
-$stmt->execute([$tanggal_batas_pemusnahan]);
+$stmt->execute([$tanggal_hari_ini]);
 $arsip_pemusnahan = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -21,7 +46,7 @@ $arsip_pemusnahan = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <div class="container mt-4">
         <h2 class="mb-3 text-center">Daftar Arsip untuk Pemusnahan</h2>
-        <form method="POST" action="hapus_arsip.php">
+        <form method="POST" action="pemusnahan.php"> <!-- Form mengarah ke pemusnahan.php itu sendiri -->
             <div class="table-container">
                 <table class="table table-striped">
                     <thead class="table-container">

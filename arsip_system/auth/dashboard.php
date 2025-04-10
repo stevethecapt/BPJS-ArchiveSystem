@@ -11,31 +11,27 @@ try {
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $total_arsip = $result['total'] ?? 0;
-
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM arsip 
-        WHERE jadwal_aktif <= CURDATE() 
-        AND jadwal_inaktif > CURDATE()
+        WHERE CURDATE() < jadwal_inaktif
     ");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $arsip_aktif = $result['total'] ?? 0;
-
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM arsip 
-        WHERE jadwal_inaktif <= CURDATE() 
-        AND jadwal_inaktif > DATE_SUB(CURDATE(), INTERVAL 3 DAY)
+        WHERE jadwal_inaktif <= CURDATE()
+        AND DATE_ADD(jadwal_inaktif, INTERVAL 1 YEAR) >= CURDATE()
     ");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $arsip_inaktif = $result['total'] ?? 0;
-
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM arsip 
-        WHERE jadwal_inaktif <= DATE_SUB(CURDATE(), INTERVAL 3 DAY)
+        WHERE DATE_ADD(jadwal_inaktif, INTERVAL 1 YEAR) < CURDATE()
     ");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -44,17 +40,15 @@ try {
 } catch (PDOException $e) {
     $total_arsip = $arsip_aktif = $arsip_inaktif = $arsip_pemusnahan = 0;
 }
-
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 if ($search !== '') {
-    $stmt = $conn->prepare("SELECT * FROM arsip WHERE judul_berkas LIKE ?");
+    $stmt = $pdo->prepare("SELECT * FROM arsip WHERE judul_berkas LIKE ?");
     $search_param = "%" . $search . "%";
-    $stmt->bind_param("s", $search_param);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $stmt->execute([$search_param]);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
-    $result = false;
+    $result = [];
 }
 
 $sqlRecentFiles = "SELECT * FROM arsip ORDER BY upload_date DESC LIMIT 5";
@@ -143,14 +137,26 @@ $(document).ready(function(){
     });
 });
 </script>
-    <div class="sidebar">
+    <button class="hamburger" onclick="toggleSidebar()">
+        ☰
+    </button>
+    <div class="sidebar" id="sidebar">
         <a href="dashboard/SDM.php" class="sidetext">SDM, Umum dan Komunikasi</a>
         <a href="dashboard/perencanaan.php" class="sidetext">Perencanaan dan Keuangan</a>
         <a href="dashboard/kepersertaan.php" class="sidetext">Kepersertaan dan Mutu Layanan</a>
         <a href="dashboard/jaminan.php" class="sidetext">Jaminan Pelayanan Kesehatan</a>
         <a href="dashboard/inputdata.php" class="sidetext">Masukan Data</a>
     </div>
-    
+    <script>
+    function toggleSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+        setTimeout(function() {
+            sidebar.classList.remove('show');
+        }, 6000);
+    }
+    </script>
+
     <div class="card-container">
         <div class="row">
             <div class="col-md-3">
@@ -259,6 +265,7 @@ nav {
     height: 38px;
     width: 210px;
     object-fit: fit;
+    margin-left: 50px;
 }
 
 .top-right {
@@ -273,18 +280,35 @@ nav {
     color: #333;
 }
 
+.hamburger {
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: #333;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+    cursor: pointer;
+}
+
 .sidebar {
     width: 230px;
     height: 100vh;
     background-color: #fff;
     position: fixed;
     top: 60px;
-    left: 0;
+    left: -230px;
     padding-top: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease; 
+}
+
+.sidebar.show {
+    left: 0;
 }
 
 .sidetext {

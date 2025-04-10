@@ -1,5 +1,10 @@
 <?php
 session_start();
+if (isset($_SESSION['username'])) {
+    header("Location: dashboard.php");
+    exit();
+}
+
 require_once "../config/database.php";
 
 $message = "";
@@ -35,28 +40,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            let notif = document.getElementById("notification");
-            if (notif) {
-                notif.style.display = "block";
-                setTimeout(function() {
-                    notif.style.opacity = "1";
-                    let fadeEffect = setInterval(function () {
-                        if (!notif.style.opacity) {
-                            notif.style.opacity = "1";
-                        }
-                        if (notif.style.opacity > "0") {
-                            notif.style.opacity -= "0.1";
-                        } else {
-                            clearInterval(fadeEffect);
-                            notif.style.display = "none";
-                        }
-                    }, 100);
-                }, 1000);
-            }
-        });
-    </script>
 <!DOCTYPE html>
 <html lang="id">
 <head>

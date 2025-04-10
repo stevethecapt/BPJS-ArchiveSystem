@@ -61,15 +61,26 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         }
     </script>
     </nav>
-
-    <div class="sidebar">
+    <button class="hamburger" onclick="toggleSidebar()">
+        ☰
+    </button>
+    <div class="sidebar" id="sidebar">
         <a href="../dashboard.php" class="sidetext">Dashboard</a>
         <a href="SDM.php" class="sidetext">SDM, Umum dan Komunikasi</a>
         <a href="perencanaan.php" class="sidetext">Perencanaan dan Keuangan</a>
         <a href="kepersertaan.php" class="sidetext">Kepersertaan dan Mutu Layanan</a>
         <a href="jaminan.php" class="sidetext">Jaminan Pelayanan Kesehatan</a>
+        <a href="inputdata.php" class="sidetext">Masukan Data</a>
     </div>
-
+    <script>
+    function toggleSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+        setTimeout(function() {
+            sidebar.classList.remove('show');
+        }, 6000);
+    }
+    </script>
     <div class="content">
         <h2>Perencanaan dan Keuangan</h2>
         <div class="table-container">
@@ -133,6 +144,7 @@ img {
     height: 38px;
     width: 210px;
     object-fit: fit;
+    margin-left: 50px;
 }
 .top-right {
     display: flex;
@@ -144,33 +156,39 @@ img {
     font-size: 1rem;
     color: #333;
 }
-.logoutbtn {
-    font-size: 1rem;
-    font-weight: 500;
-    color: white;
+.hamburger {
+    font-size: 30px;
+    background: none;
     border: none;
-    background-color: #dc3545;
-    padding: 10px 15px;
-    text-decoration: none;
-    border-radius: 5px;
-    text-align: center;
+    color: #333;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
     cursor: pointer;
 }
+
 .sidebar {
     width: 230px;
     height: 100vh;
     background-color: #fff;
     position: fixed;
     top: 60px;
-    left: 0;
-    padding-top: 20px;
+    left: -230px;
+    padding-top: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease; 
 }
+
+.sidebar.show {
+    left: 0;
+}
+
 .sidetext {
-    padding: 15px 18px;
+    padding: 10px 15px;
     display: block;
     color: black;
     text-decoration: none;
@@ -179,6 +197,7 @@ img {
     font-size: 14px;
     border-radius: 5px;
 }
+
 .sidetext:hover {
     background: #007bff;
     color: white;

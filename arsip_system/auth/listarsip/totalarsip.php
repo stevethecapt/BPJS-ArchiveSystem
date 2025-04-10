@@ -52,7 +52,7 @@ $total_arsip = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <div class="btn-container">
             <a href="detail.php?type=total" class="btn btn-info">Detail</a>
-            <a href="download.php?id=<?php echo urlencode($file['id']); ?>" class="btn btn-success">Download</a>
+            <a href="../export_excel.php?id=<?php echo urlencode($file['id']); ?>" class="btn btn-success">Download</a>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
