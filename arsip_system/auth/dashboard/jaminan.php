@@ -51,7 +51,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
             </p>
             <a href="profile/profile.php" style="display: block; background: #008CBA; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 10px;">Update Profile</a>
-            <a href="logout.php" style="display: block; background: #f44336; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 5px;">Logout</a>
+            <a href="../logout.php" style="display: block; background: #f44336; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 5px;">Logout</a>
         </div>
         <script>
             function toggleProfilePopup() {
