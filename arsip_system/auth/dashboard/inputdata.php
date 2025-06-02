@@ -68,269 +68,286 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Jaminan Pelayanan Kesehatan</title>
 </head>
-    
 <body>
-    <nav>
-        <img src="../../img/bpjs.png" class="img" alt="logo">
-        <div class="top-right">
-            <a href="javascript:void(0);" onclick="toggleProfilePopup()" style="text-decoration: none; color: black; font-weight: bold;">
-                <?php if (isset($_SESSION['username'])): ?>
-                    <?php echo htmlspecialchars($_SESSION['username']); ?>
-                <?php endif; ?>
-            </a>
-            <div id="profilePopup" style="display: none; position: absolute; top: 70px; right: 0; width: 250px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center;">
-            <p style="font-size: 18px; font-weight: bold; margin-top: 10px; margin-bottom: 12px;">
-                <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
-            </p>
-            <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
-                <?php echo htmlspecialchars($user['email'] ?? 'example@youremail.com'); ?>
-            </p>
-            <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
-                <?php echo htmlspecialchars($user['phone'] ?? 'Your Number'); ?>
-            </p>            
-            <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
-                <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
-            </p>
-            <a href="../profile/profile.php" style="display: block; background: #008CBA; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 10px;">Update Profile</a>
-            <a href="../logout.php" style="display: block; background: #f44336; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 5px;">Logout</a>
-        </div>
-        <script>
-            function toggleProfilePopup() {
-                var popup = document.getElementById("profilePopup");
-                popup.style.display = (popup.style.display === "none" || popup.style.display === "") ? "block" : "none";
-            }
-        </script>
-    </nav>
+<div class="dashboard">
+    <aside class="sidebar">
+     <div class="logo">Menu</div>
+        <nav>
+        <a href="../dashboard.php" class="sidetext" title="Dashboard">Home</a>
+        <a href="inputdata.php" class="sidetext active" title="Masukan Data">Masukan Data</a>
+        <a href="SDM.php" class="sidetext" title="SDM, Umum dan Komunikasi">SDM, Umum dan Komunikasi</a>
+        <a href="perencanaan.php" class="sidetext" title="Perencanaan dan Keuangan">Perencanaan dan Keuangan</a>
+        <a href="kepersertaan.php" class="sidetext" title="Kepersertaan dan Mutu Layanan">Kepersertaan dan Mutu Layanan</a>
+        <a href="jaminan.php" class="sidetext" title="Jaminan Pelayanan Kesehatan">Jaminan Pelayanan Kesehatan</a>
+        </nav>
+    </aside>
 
-    <form method="POST" action="">
-    <div class="form-group">
-        <label>Nomor Berkas</label>
-        <input type="number" name="nomor_berkas" required>
+    <div class="content-section">
+        <form method="POST" action="">
+            <h1>Input Data Arsip</h1>
+            <form method="POST" action="">
+            <div class="form-group">
+                <label>Nomor Berkas</label>
+                <input type="number" name="nomor_berkas" required>
+            </div>
+            <div class="form-group">
+                <label>Judul Berkas</label>
+                <input type="text" name="judul_berkas" required>
+            </div>
+            <div class="form-group">
+                <label>Nomor Item Berkas</label>
+                <input type="number" name="nomor_item_berkas" required>
+            </div>
+            <div class="form-group">
+                <label>Kode Klasifikasi</label>
+                <input type="text" name="kode_klasifikasi" required>
+            </div>
+            <div class="form-group">
+                <label>Uraian Informasi</label>
+                <input type="text" name="uraian_isi" required>
+            </div>
+            <div class="form-group">
+                <label>Tanggal</label>
+                <input type="date" name="kurun_tanggal" required>
+            </div>
+            <div class="form-group">
+                <label>Tahun</label>
+                <input type="number" name="kurun_tahun" required>
+            </div>
+            <div class="form-group">
+                <label>Jumlah</label>
+                <input type="number" name="jumlah" required>
+            </div>
+            <div class="form-group">
+                <label>Satuan</label>
+                <input type="text" name="satuan" required>
+            </div>
+            <div class="form-group">
+                <label>Tingkat Perkembangan</label>
+                <input type="text" name="tingkat_perkembangan" required>
+            </div>
+            <div class="form-group">
+                <label>Jadwal Aktif</label>
+                <input type="date" name="jadwal_aktif" required>
+            </div>
+            <div class="form-group">
+                <label>Jadwal Inaktif</label>
+                <input type="date" name="jadwal_inaktif" required>
+            </div>
+            <div class="form-group">
+                <label>Keterangan</label>
+                <input type="text" name="keterangan" required>
+            </div>
+            <div class="form-group">
+                <label>Lokasi Rak</label>
+                <input type="text" name="lokasi_rak" required>
+            </div>
+            <div class="form-group">
+                <label>Lokasi Shelf</label>
+                <input type="text" name="lokasi_shelf" required>
+            </div>
+            <div class="form-group">
+                <label>Lokasi Boks</label>
+                <input type="text" name="lokasi_boks" required>
+            </div>
+            <div class="form-group">
+                <label>Klasifikasi Keamanan</label>
+                <input type="text" name="klasifikasi_keamanan" required>
+            </div>
+            <div class="form-group">
+                <label>Hak Akses</label>
+                <input type="text" name="hak_akses" required>
+            </div>
+            <div class="form-group">
+                <label>Bidang</label>
+                <select id="bidang" name="bidang"required>
+                    <option value="">Pilih Bidang</option>
+                    <option value="SDM Umum dan Komunikasi">SDM, Umum dan Komunikasi</option>
+                    <option value="Perencanaan dan Keuangan">Perencanaan dan Keuangan</option>
+                    <option value="Kepesertaan dan Mutu Layanan">Kepersertaan dan Mutu Layanan</option>
+                    <option value="Jaminan Pelayanan Kesehatan">Jaminan Pelayanan Kesehatan</option>
+                </select>
+            </div>
+            <button type="submit">Simpan</button>
+        <div class="logo-container">
+            <img src="../../img/bpjs.png" alt="Logo BPJS Kesehatan" class="bpjs-logo" />
+        </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label>Judul Berkas</label>
-        <input type="text" name="judul_berkas" required>
-    </div>
-    <div class="form-group">
-        <label>Nomor Item Berkas</label>
-        <input type="number" name="nomor_item_berkas" required>
-    </div>
-    <div class="form-group">
-        <label>Kode Klasifikasi</label>
-        <input type="text" name="kode_klasifikasi" required>
-    </div>
-    <div class="form-group">
-        <label>Uraian Informasi</label>
-        <input type="text" name="uraian_isi" required>
-    </div>
-    <div class="form-group">
-        <label>Tanggal</label>
-        <input type="date" name="kurun_tanggal" required>
-    </div>
-    <div class="form-group">
-        <label>Tahun</label>
-        <input type="number" name="kurun_tahun" required>
-    </div>
-    <div class="form-group">
-        <label>Jumlah</label>
-        <input type="number" name="jumlah" required>
-    </div>
-    <div class="form-group">
-        <label>Satuan</label>
-        <input type="text" name="satuan" required>
-    </div>
-    <div class="form-group">
-        <label>Tingkat Perkembangan</label>
-        <input type="text" name="tingkat_perkembangan" required>
-    </div>
-    <div class="form-group">
-        <label>Jadwal Aktif</label>
-        <input type="date" name="jadwal_aktif" required>
-    </div>
-    <div class="form-group">
-        <label>Jadwal Inaktif</label>
-        <input type="date" name="jadwal_inaktif" required>
-    </div>
-    <div class="form-group">
-        <label>Keterangan</label>
-        <input type="text" name="keterangan" required>
-    </div>
-    <div class="form-group">
-        <label>Lokasi Rak</label>
-        <input type="text" name="lokasi_rak" required>
-    </div>
-    <div class="form-group">
-        <label>Lokasi Shelf</label>
-        <input type="text" name="lokasi_shelf" required>
-    </div>
-    <div class="form-group">
-        <label>Lokasi Boks</label>
-        <input type="text" name="lokasi_boks" required>
-    </div>
-    <div class="form-group">
-        <label>Klasifikasi Keamanan</label>
-        <input type="text" name="klasifikasi_keamanan" required>
-    </div>
-    <div class="form-group">
-        <label>Hak Akses</label>
-        <input type="text" name="hak_akses" required>
-    </div>
-    <div class="form-group">
-        <label>Bidang</label>
-        <select id="bidang" name="bidang"required>
-            <option value="">Pilih Bidang</option>
-            <option value="SDM Umum dan Komunikasi">SDM, Umum dan Komunikasi</option>
-            <option value="Perencanaan dan Keuangan">Perencanaan dan Keuangan</option>
-            <option value="Kepesertaan dan Mutu Layanan">Kepersertaan dan Mutu Layanan</option>
-            <option value="Jaminan Pelayanan Kesehatan">Jaminan Pelayanan Kesehatan</option>
-        </select>
-    </div>
-    <button type="submit">Simpan</button>
-</form>
 </body>
 </html>
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body {
-    font-family: Arial, sans-serif;
-    background-color: #339cff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    margin-top: 20px;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg,rgb(94, 182, 250),rgb(5, 54, 83));
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        margin-top: 20px;
+    }
 
-nav {
-    width: 100%;
-    background: #fff;
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: 15px 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 1000;
-}
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
 
-nav .img {
-    height: 38px;
-    width: 210px;
-    object-fit: fit;
-}
+    .dashboard {
+        display: flex;
+        min-height: 100vh;
+        background: #f8fafc;
+    }
 
-.top-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .sidebar {
+        width: 220px;
+        background: #e3f2fd;
+        display: flex;
+        flex-direction: column;
+        padding: 2rem 1.5rem;
+        box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
+    }
 
-.username {
-    font-weight: bold;
-    font-size: 1rem;
-    color: #333;
-}
+    .sidebar .logo {
+        font-weight: 600;
+        font-size: 1.8rem;
+        color: #005b90;
+        margin-bottom: 3rem;
+        text-align: center;
+        letter-spacing: 1.5px;
+        margin-top: 30px;
+    }
 
-.logoutbtn {
-    font-size: 1rem;
-    font-weight: 500;
-    color: white;
-    border: none;
-    background-color: #dc3545;
-    padding: 10px 15px;
-    text-decoration: none;
-    border-radius: 5px;
+    .sidebar nav a {
+        padding: 12px 16px;
+        margin-bottom: 0.9rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: #005b90;
+        transition: background-color 0.25s ease, color 0.25s ease;
+        display: block;
+        user-select: none;
+        text-align: center;
+    }
+
+    .sidebar nav a:hover, .sidebar nav a.active {
+        background: #005b90;
+        color: #e3f2fd;
+    }
+
+    .message.show {
+        display: block;
+        top: 10px;
+    }
+
+    .message {
+        position: fixed;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 550px;
+        z-index: 1000; 
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
+    }
+
+    .content-section {
+        align-items: center;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 60px;
+        color: #005b90;
+        width: 100%;
+        font-weight: bold;
+    }
+
+    form {
+        background: #e3f2fd;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 640px;
+        display: flex;
+        flex-direction: column;
+        max-height: 85vh;
+        overflow-y: auto;
+        position: fixed;
+        align-items: center;
+        top: 50%;
+        left: calc(120px + 50%);
+        transform: translate(-50%, -50%);
+    }
+
+
+    .form-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+        margin-bottom: 10px;
+        color: #003f5a;
+    }
+
+    label {
+        width: 35%; 
+        text-align: left; 
+    }
+
+    input, textarea, select {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        background: #e3f2fd;
+        border-color: #003f5a;
+    }
+
+    button {
+        margin-top: 25px;
+        background: #42a5f5;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    button:hover {
+        background: #42a5f5;
+    }
+
+  .logo-container {
+    margin-top: 35px;
     text-align: center;
-    cursor: pointer;
-}
+  }
 
-.message.show {
-    display: block;
-    top: 10px;
-}
-
-.message {
-    position: fixed;
-    top: -60px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 550px;
-    z-index: 1000; 
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
-}
-
-.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.error { 
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb; 
-}
-
-form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 520px;
-    display: flex;
-    flex-direction: column;
-    max-height: 75vh;
-    overflow-y: auto;
-    position: fixed;
-    align-items: center;
-}
-
-.form-group {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-label {
-    width: 35%; 
-    text-align: left; 
-}
-
-input, textarea, select {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-button {
-    margin-top: 15px;
-    background: #28a745;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-}
-
-button:hover {
-    background: #218838;
-}
+  .bpjs-logo {
+    max-width: 190px;
+    height: auto;
+    opacity: 0.9;
+  }
 </style>

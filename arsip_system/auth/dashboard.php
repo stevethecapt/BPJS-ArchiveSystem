@@ -73,13 +73,14 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 <body>
 <div class="dashboard">
     <aside class="sidebar">
-        <div class="logo">Bidang</div>
+     <div class="logo">Menu</div>
         <nav>
+        <a href="dashboard/dashboard.php" class="sidetext active" title="Dashboard">Home</a>
+        <a href="dashboard/inputdata.php" class="sidetext" title="Masukan Data">Masukan Data</a>
         <a href="dashboard/SDM.php" class="sidetext" title="SDM, Umum dan Komunikasi">SDM, Umum dan Komunikasi</a>
         <a href="dashboard/perencanaan.php" class="sidetext" title="Perencanaan dan Keuangan">Perencanaan dan Keuangan</a>
         <a href="dashboard/kepersertaan.php" class="sidetext" title="Kepersertaan dan Mutu Layanan">Kepersertaan dan Mutu Layanan</a>
         <a href="dashboard/jaminan.php" class="sidetext" title="Jaminan Pelayanan Kesehatan">Jaminan Pelayanan Kesehatan</a>
-        <a href="dashboard/inputdata.php" class="sidetext" title="Masukan Data">Masukan Data</a>
         </nav>
     </aside>
 
@@ -178,7 +179,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         </section>
 
         <section class="content-section">
-            <h2>Selamat Datang di Arsip Digital BPJS</h2>
+            <h2>Selamat Datang di Arsip Digital BPJS Kesehatan</h2>
             <p>
                Pantau ringkasan data Arsip terkini di berbagai bidang yang ada. Gunakan menu di sisi kiri untuk navigasi cepat ke bagian detail Bidang yang Anda butuhkan.
             </p>
@@ -274,7 +275,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     .sidebar nav a {
       padding: 12px 16px;
-      margin-bottom: 1.1rem;
+      margin-bottom: 0.9rem;
       border-radius: 8px;
       font-weight: 600;
       font-size: 1.05rem;
@@ -340,7 +341,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
       margin-bottom: 3rem;
     }
 
-    /* Card as button */
     .card {
       background: #e3f2fd;
       border-radius: 12px;
@@ -488,5 +488,4 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     .content-section .btn-info:hover {
         background-color: #005b90;
     }
-
   </style>
