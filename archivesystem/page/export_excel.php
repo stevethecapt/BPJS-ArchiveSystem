@@ -14,8 +14,6 @@ if (!empty($status)) {
     $filename .= "_" . strtolower($bidang);
 }
 $filename .= ".xlsx";
-
-// Ambil data
 try {
     if (!empty($status)) {
         $sql = "SELECT * FROM (
@@ -38,12 +36,8 @@ try {
     }
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Create spreadsheet
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
-
-    // Header kolom
     $headers = [
         "ID", "Nomor Berkas", "Judul Berkas", "Nomor Item Berkas", "Kode Klasifikasi",
         "Uraian Isi", "Kurun Tanggal", "Kurun Tahun", "Jumlah", "Satuan",
@@ -82,11 +76,8 @@ try {
         $rowNum++;
     }
 
-    // Styling header
     $sheet->getStyle('A1:U1')->getFont()->setBold(true);
     $sheet->getStyle('A1:U1')->getFill()->setFillType('solid')->getStartColor()->setRGB('BDD7EE');
-
-    // Download file
     header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     header("Content-Disposition: attachment; filename=\"$filename\"");
     header("Cache-Control: max-age=0");

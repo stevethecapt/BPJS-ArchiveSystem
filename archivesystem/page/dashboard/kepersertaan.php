@@ -16,7 +16,7 @@ try {
 } catch (PDOException $e) {
     die("Error: " . $e->getMessage());
 }
-$user_id = $_SESSION['id_user'];
+$user_id = $_SESSION['user_id'];
 $stmt = $pdo->prepare("SELECT fullname, username, email, phone, bidang FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -28,6 +28,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Kepersertaan dan Mutu Layanan</title>
 </head>
 <body>
@@ -47,7 +48,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     <main class="main-content">
         <header>
             <img src="../../img/bpjs.png" alt="Logo BPJS" class="header-logo" />
-            <form method="GET" action="search.php" style="position: relative; margin-left: auto; margin-right: 20px;">
+            <form method="GET" action="../search.php" style="position: relative; margin-left: auto; margin-right: 20px;">
                 <input type="text" id="search" name="search" placeholder="Cari arsip..." autocomplete="off"
                     style="padding: 8px 35px 8px 15px; border-radius: 15px; border: 1px solid #ccc; outline: none;">
                 <button type="submit"
@@ -91,23 +92,28 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 <span style="cursor: pointer;" onclick="toggleProfilePopup()">
                     <?php echo htmlspecialchars($_SESSION['username'] ?? 'Pengguna'); ?>
                 </span>
-                <div id="profilePopup" style="display: none; position: absolute; top: 60px; right: 0; width: 250px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center; z-index: 999;">
+                <div id="profilePopup" style="display: none; position: absolute; top: 60px; right: 0; width: 250px; padding: 20px; background: #f4faff; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center; z-index: 999;">
                     <p style="font-size: 18px; font-weight: bold; margin-top: 10px; margin-bottom: 12px; color: #023858;">
-                    <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
+                        <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
                     </p>
                     <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
-                    <?php echo htmlspecialchars($user['email'] ?? 'example@youremail.com'); ?>
+                        <?php echo htmlspecialchars($user['email'] ?? 'example@youremail.com'); ?>
                     </p>
                     <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
-                    <?php echo htmlspecialchars($user['phone'] ?? 'Your Number'); ?>
+                        <?php echo htmlspecialchars($user['phone'] ?? 'Your Number'); ?>
                     </p>
                     <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
-                    <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
+                        <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
                     </p>
-                    <a href="../profile/profile.php" style="display: block; background: #0071bc; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 10px;">Update Profile</a>
-                    <a href="../logout.php" style="display: block; background:rgb(208, 17, 3); color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 5px;">Logout</a>
+                    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                        <a href="../profile/profile.php" style="display: inline-flex; align-items: center; gap: 5px; background: transparent; color: #023858; text-decoration: none; padding: 8px 10px; border-radius: 10px; font-weight: bold; font-size: 13px;">
+                            <i class="fas fa-user-edit"></i> Update Profile
+                        </a>
+                        <a href="logout.php" style="display: inline-flex; align-items: center; gap: 5px; background: transparent; color: #023858; text-decoration: none; padding: 8px 10px; border-radius: 10px; font-weight: bold; font-size: 13px;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
                 </div>
-            </div>
             <script>
             function toggleProfilePopup() {
                 var popup = document.getElementById("profilePopup");
@@ -163,33 +169,29 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
       -moz-osx-font-smoothing: grayscale;
       user-select: none;
     }
-
     a {
       text-decoration: none;
       color: inherit;
     }
-
     .dashboard {
       display: flex;
       min-height: 100vh;
       background: #f8fafc;
     }
-
     .sidebar {
-        width: 220px;
-        background: #0071bc;
-        display: flex;
-        flex-direction: column;
-        padding: 2rem 1.5rem;
-        box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        overflow-y: auto;
-        z-index: 1000;
+      width: 220px;
+      background: #0071bc;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 1000;
     }
-
     .sidebar .logo {
       font-weight: 600;
       font-size: 1.8rem;
@@ -199,7 +201,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
       letter-spacing: 1.5px;
       margin-top: 30px;
     }
-
     .sidebar nav a {
       padding: 12px 16px;
       margin-bottom: 0.9rem;
@@ -212,12 +213,10 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
       user-select: none;
       text-align: center;
     }
-
     .sidebar nav a:hover, .sidebar nav a.active {
       background: #f4faff;
       color: #0071bc;
     }
-
     .main-content {
         flex: 1;
         padding: 2.5rem 3rem;
@@ -227,7 +226,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         box-shadow: inset 3px 0 8px rgba(0,0,0,0.05);
         margin-left: 220px;
     }
-
     header {
         display: flex;
         justify-content: space-between;
@@ -240,7 +238,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         background: #ffffff;
         z-index: 900;
     }
-
     .header-logo {
         height: 2.6rem;
         font-weight: 600;
@@ -249,18 +246,15 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         display: inline-block;
         object-fit: contain;
     }
-
     .profile {
       display: flex;
       align-items: center;
     }
-
     .profile span {
       font-weight: 600;
       font-size: 1rem;
       color: #023858;
     }
-
     .content-section {
       background: #f4faff;
       padding: 2.3rem 2.8rem;
@@ -271,18 +265,15 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
       max-width: 1100px;
       line-height: 1.5;
     }
-
     .content-section h2 {
       margin-bottom: 1.3rem;
       font-weight: 600;
       font-size: 1.9rem;
       letter-spacing: 1.1px;
     }
-
     .content-section p {
       font-size: 1rem;
     }
-
     @media (max-width: 860px) {
       .sidebar {
         width: 70px;
@@ -326,11 +317,9 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         overflow: hidden;
         font-size: 0.95rem;
     }
-
     .content-section thead {
         background-color: #f4faff;
     }
-
     .content-section thead th {
         padding: 1rem 1.2rem;
         text-align: left;
@@ -338,20 +327,16 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         color: #005b90;
         border-bottom: 2px solid #005b90;
     }
-
     .content-section tbody tr {
         transition: background-color 0.2s ease;
     }
-
     .content-section tbody tr:hover {
         background-color: #eaf6ff;
     }
-
     .content-section tbody td {
         padding: 0.85rem 1.2rem;
         border-bottom: 1px solid #c6e4f9;
     }
-
     .content-section tbody tr:last-child td {
         border-bottom: none;
     }
@@ -368,7 +353,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         transition: background-color 0.2s ease;
         margin-right: 10px;
     }
-
     .content-section .inputbtn:hover {
         background-color: #005b90;
     }
@@ -382,7 +366,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         transition: background-color 0.2s ease;
         margin-right: 10px;
     }
-
     .content-section .btn-info:hover {
         background-color: #005b90;
     }
@@ -396,7 +379,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         transition: background-color 0.2s ease;
         margin-right: 10px;
     }
-
     .content-section .downloadbtn:hover {
         background-color: #005b90;
     }

@@ -44,7 +44,7 @@ try {
 </head>
 <body>
 <header>
-  <img src="../../../img/bpjs.png" alt="Logo BPJS" class="header-logo" />
+  <img src="../../img/bpjs.png" alt="Logo BPJS" class="header-logo" />
 </header>
 
 <div class="content-wrapper">
@@ -92,7 +92,19 @@ try {
             <td><?= htmlspecialchars($file["upload_date"]) ?></td>
             <td><?= htmlspecialchars($file["jadwal_aktif"]) ?></td>
             <td><?= htmlspecialchars($file["jadwal_inaktif"]) ?></td>
-            <td><?= $status ?></td>
+            <td>                  <?php
+              $aktif_start = new DateTime($file["jadwal_aktif"]);
+              $inactive_start = new DateTime($file["jadwal_inaktif"]);
+              $destroy_start = (clone $inactive_start)->modify('+1 year');
+              if ($today >= $aktif_start && $today < $inactive_start) {
+                echo '<span class="badge bg-success">Aktif</span>';
+              } elseif ($today >= $inactive_start && $today < $destroy_start) {
+                echo '<span class="badge bg-warning text-dark">Inaktif</span>';
+              } else {
+                echo '<span class="badge bg-danger">Dimusnahkan</span>';
+              }
+              ?>
+            </td>
           </tr>
           <?php endforeach; ?>
         <?php else : ?>

@@ -59,7 +59,7 @@ $stmtRecentFiles = $pdo->prepare($sqlRecentFiles);
 $stmtRecentFiles->execute();
 $recentFiles = $stmtRecentFiles->fetchAll(PDO::FETCH_ASSOC);
 
-$user_id = $_SESSION['username'];
+$user_id = $_SESSION['user_id'];
 $stmt = $pdo->prepare("SELECT fullname, username, email, phone, bidang FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -71,6 +71,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Dashboard</title>
 </head>
 <body>
@@ -134,21 +135,27 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 <span style="cursor: pointer;" onclick="toggleProfilePopup()">
                     <?php echo htmlspecialchars($_SESSION['username'] ?? 'Pengguna'); ?>
                 </span>
-                <div id="profilePopup" style="display: none; position: absolute; top: 60px; right: 0; width: 250px; padding: 20px; background: white; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center; z-index: 999;">
+                <div id="profilePopup" style="display: none; position: absolute; top: 60px; right: 0; width: 250px; padding: 20px; background: #f4faff; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); text-align: center; z-index: 999;">
                     <p style="font-size: 18px; font-weight: bold; margin-top: 10px; margin-bottom: 12px; color: #023858;">
-                    <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
+                        <?php echo htmlspecialchars($user['fullname'] ?? 'Nama Tidak Ditemukan'); ?>
                     </p>
                     <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
-                    <?php echo htmlspecialchars($user['email'] ?? 'example@youremail.com'); ?>
+                        <?php echo htmlspecialchars($user['email'] ?? 'example@youremail.com'); ?>
                     </p>
                     <p style="font-size: 14px; color: #666; margin-bottom: 8px;">
-                    <?php echo htmlspecialchars($user['phone'] ?? 'Your Number'); ?>
+                        <?php echo htmlspecialchars($user['phone'] ?? 'Your Number'); ?>
                     </p>
                     <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
-                    <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
+                        <?php echo htmlspecialchars($user['bidang'] ?? 'Bidang'); ?>
                     </p>
-                    <a href="profile/profile.php" style="display: block; background: #0071bc; color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 10px;">Update Profile</a>
-                    <a href="logout.php" style="display: block; background:rgb(208, 17, 3); color: white; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 5px;">Logout</a>
+                    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                        <a href="profile/profile.php" style="display: inline-flex; align-items: center; gap: 5px; background: transparent; color: #023858; text-decoration: none; padding: 8px 10px; border-radius: 10px; font-weight: bold; font-size: 13px;">
+                            <i class="fas fa-user-edit"></i> Update Profile
+                        </a>
+                        <a href="logout.php" style="display: inline-flex; align-items: center; gap: 5px; background: transparent; color: #023858; text-decoration: none; padding: 8px 10px; border-radius: 10px; font-weight: bold; font-size: 13px;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
                 </div>
             </div>
             <script>
