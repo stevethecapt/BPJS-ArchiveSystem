@@ -10,13 +10,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 try {
-    // Total arsip (termasuk yang sudah dimusnahkan)
     $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM arsip");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $total_arsip = $result['total'] ?? 0;
-
-    // Arsip Aktif (hari ini < jadwal_inaktif)
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM arsip 
@@ -26,8 +23,6 @@ try {
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $arsip_aktif = $result['total'] ?? 0;
-
-    // Arsip Inaktif (jadwal_inaktif <= hari ini DAN belum masuk masa pemusnahan)
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM arsip 
@@ -38,8 +33,6 @@ try {
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $arsip_inaktif = $result['total'] ?? 0;
-
-    // Arsip untuk Pemusnahan (lebih dari 1 hari setelah inaktif, tapi belum dimusnahkan)
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM arsip 

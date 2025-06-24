@@ -65,10 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label for="login-password">Password</label>
       <input type="password" id="login-password" name="password" placeholder="Enter Your Password" required />
       <div class="error-message" id="login-password-error"></div>
-
+      <div class="forgetpassword" onclick="window.location.href='resetpassword.php'">Forget Your Password? Reset Here</div>
       <button type="submit">Login</button>
       <div class="toggle-link" onclick="window.location.href='register.php'">Don't have an account? Register</div>
-            
       <div class="logo-container">
         <img src="../img/bpjs.png" alt="Logo BPJS Kesehatan" class="bpjs-logo" />
       </div>
@@ -84,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     body {
       font-family: 'Poppins', sans-serif;
       margin: 0;
-      background: linear-gradient(135deg, #005f9e 0%, #a0c4ff 80%);
+      background: linear-gradient(135deg,rgb(0, 105, 210) 0%,rgb(207, 160, 255) 80%);
       display: flex;
       height: 100vh;
       align-items: center;
@@ -148,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       outline: none;
     }
     button {
-      background: #005f9e;
+      background:rgb(3, 148, 233);
       color: #fff;
       font-weight: 600;
       border: none;
@@ -159,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       transition: background 0.3s;
     }
     button:hover {
-      background: #004a7c;
+      background:rgb(53, 161, 255);
     }
     .toggle-link {
       margin-top: 16px;
@@ -168,6 +167,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       color: #009639;
       cursor: pointer;
       user-select: none;
+    }
+    .toggle-link:hover {
+      text-decoration: underline;
+    }
+    .forgetpassword {
+      font-size: 0.8rem;
+      color: rgb(53, 53, 53);
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 16px;
     }
     .toggle-link:hover {
       text-decoration: underline;
