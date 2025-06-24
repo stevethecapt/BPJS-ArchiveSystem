@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config/database.php'; // ini sudah menginisialisasi $pdo
+require_once __DIR__ . '/../config/database.php';
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -8,7 +8,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = trim($_POST["username"]);
     $email    = trim($_POST["email"]);
     $password = $_POST["password"];
-
     if (empty($fullname) || empty($username) || empty($email) || empty($password)) {
         $message = "Semua field harus diisi.";
     } else {
@@ -18,7 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 'username' => $username,
                 'email' => $email
             ]);
-
             if ($check->fetch()) {
                 $message = "Username atau email sudah digunakan.";
             } else {
@@ -30,17 +28,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     'email' => $email,
                     'password' => $hashedPassword
                 ]);
-
                 header("Location: login.php");
                 exit();
             }
         } catch (PDOException $e) {
-            $message = "Terjadi kesalahan: " . $e->getMessage(); // debug saat pengembangan
+            $message = "Terjadi kesalahan: " . $e->getMessage();
         }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>

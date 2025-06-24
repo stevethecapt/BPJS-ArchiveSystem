@@ -14,7 +14,10 @@ try {
             $title = "Detail Arsip Aktif";
             break;
         case 'inaktif':
-            $query = "SELECT * FROM arsip WHERE jadwal_inaktif <= CURDATE() ORDER BY id ASC";
+            $query = "SELECT * FROM arsip 
+                      WHERE jadwal_inaktif <= CURDATE() 
+                      AND jadwal_inaktif > DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+                      ORDER BY id ASC";
             $title = "Detail Arsip Inaktif";
             break;
         case 'pemusnahan':
@@ -22,8 +25,20 @@ try {
             $title = "Detail Arsip Pemusnahan";
             break;
         default:
-            $query = "SELECT * FROM arsip WHERE status != 'dimusnahkan' ORDER BY upload_date DESC";
-            $title = "Detail Total Arsip";
+        $query = "SELECT *, 
+            CASE 
+                WHEN CURDATE() < jadwal_aktif THEN 'Belum Aktif'
+                WHEN CURDATE() BETWEEN jadwal_aktif AND DATE_SUB(jadwal_inaktif, INTERVAL 1 DAY) THEN 'Aktif'
+                WHEN CURDATE() = jadwal_inaktif THEN 'Inaktif'
+                WHEN CURDATE() > jadwal_inaktif THEN 'Pemusnahan'
+                ELSE 'Tidak Diketahui'
+            END AS status_arsip
+            FROM arsip 
+            WHERE status != 'dimusnahkan' 
+            ORDER BY upload_date DESC";
+        $title = "Detail Total Arsip";
+              break;
+
     }
 
     $stmt = $pdo->prepare($query);
@@ -92,19 +107,7 @@ try {
             <td><?= htmlspecialchars($file["upload_date"]) ?></td>
             <td><?= htmlspecialchars($file["jadwal_aktif"]) ?></td>
             <td><?= htmlspecialchars($file["jadwal_inaktif"]) ?></td>
-            <td>                  <?php
-              $aktif_start = new DateTime($file["jadwal_aktif"]);
-              $inactive_start = new DateTime($file["jadwal_inaktif"]);
-              $destroy_start = (clone $inactive_start)->modify('+1 year');
-              if ($today >= $aktif_start && $today < $inactive_start) {
-                echo '<span class="badge bg-success">Aktif</span>';
-              } elseif ($today >= $inactive_start && $today < $destroy_start) {
-                echo '<span class="badge bg-warning text-dark">Inaktif</span>';
-              } else {
-                echo '<span class="badge bg-danger">Dimusnahkan</span>';
-              }
-              ?>
-            </td>
+            <td><?= $status ?></td>
           </tr>
           <?php endforeach; ?>
         <?php else : ?>
@@ -113,12 +116,12 @@ try {
       </tbody>
     </table>
   </div>
-
   <div class="mt-4 text-center">
     <a href="javascript:history.back()" class="btn btn-secondary">← Kembali</a>
   </div>
 </div>
-
+</body>
+</html>
 <style>
   body {
     background-color: #f8fafc;
@@ -154,5 +157,3 @@ try {
     text-align: center;
   }
 </style>
-</body>
-</html>

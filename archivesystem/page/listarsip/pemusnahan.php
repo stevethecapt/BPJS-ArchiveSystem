@@ -1,6 +1,12 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require_once("../../config/database.php");
+
+// Proses penghapusan
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_ids'])) {
     try {
         $delete_ids = $_POST['delete_ids'];
@@ -14,15 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_ids'])) {
         echo "Terjadi kesalahan: " . $e->getMessage();
     }
 }
-$tanggal_hari_ini = date('Y-m-d');
+
+// Ambil data arsip yang layak dimusnahkan
 $query = "SELECT * FROM arsip 
           WHERE status != 'dimusnahkan'
-            AND DATE_ADD(jadwal_inaktif, INTERVAL 1 YEAR) < ?
+            AND DATE_ADD(jadwal_inaktif, INTERVAL 1 DAY) <= CURDATE()
           ORDER BY jadwal_inaktif ASC";
 $stmt = $pdo->prepare($query);
-$stmt->execute([$tanggal_hari_ini]);
+$stmt->execute();
 $arsip_pemusnahan = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>

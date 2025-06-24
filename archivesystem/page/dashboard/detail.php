@@ -5,7 +5,6 @@ if (!isset($_GET['bidang'])) {
     die("Bidang tidak ditemukan.");
 }
 $bidang = $_GET['bidang'];
-
 $sql = "SELECT *, 
         CASE 
             WHEN CURDATE() < jadwal_inaktif THEN 'Aktif' 
@@ -20,7 +19,6 @@ $stmt = $pdo->prepare($sql);
 $stmt->bindParam(':bidang', $bidang, PDO::PARAM_STR);
 $stmt->execute();
 $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 if (!$files) {
     die("Data tidak ditemukan untuk bidang ini.");
 }

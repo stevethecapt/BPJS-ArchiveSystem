@@ -10,41 +10,59 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 try {
+    // Total arsip (termasuk yang sudah dimusnahkan)
     $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM arsip");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $total_arsip = $result['total'] ?? 0;
+
+    // Arsip Aktif (hari ini < jadwal_inaktif)
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM arsip 
-        WHERE CURDATE() < jadwal_inaktif
+        WHERE status != 'dimusnahkan'
+          AND CURDATE() < jadwal_inaktif
     ");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $arsip_aktif = $result['total'] ?? 0;
+
+    // Arsip Inaktif (jadwal_inaktif <= hari ini DAN belum masuk masa pemusnahan)
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM arsip 
-        WHERE jadwal_inaktif <= CURDATE()
-        AND DATE_ADD(jadwal_inaktif, INTERVAL 1 YEAR) >= CURDATE()
+        WHERE status != 'dimusnahkan'
+          AND jadwal_inaktif <= CURDATE()
+          AND DATE_ADD(jadwal_inaktif, INTERVAL 1 DAY) > CURDATE()
     ");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $arsip_inaktif = $result['total'] ?? 0;
+
+    // Arsip untuk Pemusnahan (lebih dari 1 hari setelah inaktif, tapi belum dimusnahkan)
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM arsip 
-        WHERE DATE_ADD(jadwal_inaktif, INTERVAL 1 YEAR) < CURDATE()
+        WHERE status != 'dimusnahkan'
+          AND DATE_ADD(jadwal_inaktif, INTERVAL 1 DAY) <= CURDATE()
     ");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $arsip_pemusnahan = $result['total'] ?? 0;
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) as total 
+        FROM arsip 
+        WHERE status = 'dimusnahkan'
+    ");
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $arsip_dimusnahkan = $result['total'] ?? 0;
 
 } catch (PDOException $e) {
-    $total_arsip = $arsip_aktif = $arsip_inaktif = $arsip_pemusnahan = 0;
+    $total_arsip = $arsip_aktif = $arsip_inaktif = $arsip_pemusnahan = $arsip_dimusnahkan = 0;
 }
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
 if ($search !== '') {
     $stmt = $pdo->prepare("SELECT * FROM arsip WHERE judul_berkas LIKE ?");
     $search_param = "%" . $search . "%";
@@ -69,6 +87,9 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">

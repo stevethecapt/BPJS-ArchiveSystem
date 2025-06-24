@@ -5,7 +5,10 @@ if (!$pdo) {
     die("Database connection Fail");
 }
 
-$query = "SELECT * FROM arsip WHERE jadwal_inaktif <= CURDATE() ORDER BY id ASC";
+$query = "SELECT * FROM arsip 
+            WHERE jadwal_inaktif <= CURDATE() 
+            AND jadwal_inaktif > DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+            ORDER BY id ASC";
 $stmt = $pdo->prepare($query);
 $stmt->execute();
 $arsip_inaktif = $stmt->fetchAll(PDO::FETCH_ASSOC);
