@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 23, 2025 at 04:37 AM
+-- Generation Time: Jul 06, 2025 at 04:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -58,8 +58,12 @@ CREATE TABLE `arsip` (
 --
 
 INSERT INTO `arsip` (`id`, `nomor_berkas`, `judul_berkas`, `nomor_item_berkas`, `kode_klasifikasi`, `uraian_isi`, `kurun_tanggal`, `kurun_tahun`, `jumlah`, `satuan`, `tingkat_perkembangan`, `jadwal_aktif`, `jadwal_inaktif`, `keterangan`, `lokasi_rak`, `lokasi_shelf`, `lokasi_boks`, `klasifikasi_keamanan`, `hak_akses`, `bidang`, `created_at`, `upload_date`, `status`) VALUES
-(1, '1', 'abc', '2', '54321abc', 'qwerty', '2025-06-18', '2025', 1, 'BOKS', 'asli', '2025-06-18', '2025-06-19', 'abcdefg', '1', '2', '3', 'terbatas', 'asdep bidang', 'SDM Umum dan Komunikasi', '2025-06-18 08:41:31', '2025-06-22 01:02:47', ''),
-(2, '1', 'qwertyabcd', '2', '12', 'qwerty', '2025-06-22', '2025', 1, 'BOKS', 'asli', '2025-06-22', '2025-06-24', 'abcdefg', '1', '2', '3', 'terbatas', 'asdep bidang', 'Perencanaan dan Keuangan', '2025-06-21 17:13:39', '2025-06-22 01:13:39', 'aktif');
+(1, '1', 'abc', '2', '54321abc', 'qwerty', '2025-06-18', '2025', 1, 'BOKS', 'asli', '2025-06-18', '2025-06-19', 'abcdefg', '1', '2', '3', 'terbatas', 'asdep bidang', 'SDM Umum dan Komunikasi', '2025-06-18 08:41:31', '2025-06-22 01:02:47', 'dimusnahkan'),
+(2, '1', 'qwertyabcd', '2', '12', 'qwerty', '2025-06-22', '2025', 1, 'BOKS', 'asli', '2025-06-22', '2025-06-24', 'abcdefg', '1', '2', '3', 'terbatas', 'asdep bidang', 'Perencanaan dan Keuangan', '2025-06-21 17:13:39', '2025-06-22 01:13:39', 'dimusnahkan'),
+(3, '1', 'qwertyabcd', '2', '54321abc', 'qwerty', '2025-06-24', '2025', 1, 'BOKS', 'asli', '2025-06-24', '2025-06-24', 'abcdefg', '1', '2', '3', 'terbatas', 'asdep bidang', 'Kepesertaan dan Mutu Layanan', '2025-06-24 02:50:26', '2025-06-24 10:50:26', 'aktif'),
+(4, '123', 'qwertyabcd', '2', '54321abc', 'qwerty', '2025-06-02', '2025', 1, 'BOKS', 'copy', '2025-06-24', '2025-06-24', 'abcdefg', '1', '2', '3', 'terbatas', 'asdep bidang', 'SDM Umum dan Komunikasi', '2025-06-24 02:52:52', '2025-06-24 10:52:52', 'aktif'),
+(5, '2', 'qwertyabcd', '2', 'abc12345', 'abcdqwerty', '2025-06-24', '2025', 2, 'BOKS', 'copy', '2025-06-24', '2025-06-26', 'abcdefg', '1', '2', '3', 'terbatas', 'asdep bidang', 'Jaminan Pelayanan Kesehatan', '2025-06-24 02:56:35', '2025-06-24 10:56:35', 'aktif'),
+(6, '135', 'qwertyabcd', '15', '54321abc', 'qwerty123', '2025-06-24', '2025', 1, 'BOKS', 'asli', '2025-06-24', '2025-06-30', 'abcdefg', '1', '2', '3', 'terbatas', 'asdep bidang', 'Jaminan Pelayanan Kesehatan', '2025-06-24 03:05:20', '2025-06-24 11:05:20', 'aktif');
 
 -- --------------------------------------------------------
 
@@ -75,17 +79,20 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `phone` varchar(20) DEFAULT NULL,
-  `bidang` varchar(100) DEFAULT NULL
+  `tanggal_lahir` date DEFAULT NULL,
+  `bidang` varchar(100) DEFAULT NULL,
+  `jenis_kelamin` varchar(20) DEFAULT NULL,
+  `address` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `fullname`, `username`, `email`, `password`, `created_at`, `phone`, `bidang`) VALUES
-(1, 'steve kevins', 'stevekevins', 'stevekevins@gmail.com', '$2y$10$vVSGeRDjHHNwHk4gVJWawevJKaZbjVPznvw0Rsofgzt/xUDVYu5Gu', '2025-06-18 06:28:49', NULL, NULL),
-(2, 'steve kevin', 'stevekevin', 'stevekevin@gmail.com', '$2y$10$ZJ97cgpbLWJcl0JXvYNxj.fIqmh0z2DD.INnoUODbEr7a7nbdZ3NW', '2025-06-18 06:36:07', NULL, NULL),
-(3, 'steve kevin', 'stevekevinss', 'stevekevinss@gmail.com', '$2y$10$FpRCcSWyEtYF.vdIEWlojuEcV2jLl2XgbajMshv3R17nTc87Fe6la', '2025-06-18 08:17:53', NULL, NULL);
+INSERT INTO `users` (`id`, `fullname`, `username`, `email`, `password`, `created_at`, `phone`, `tanggal_lahir`, `bidang`, `jenis_kelamin`, `address`) VALUES
+(1, 'steve kevins', 'stevekevins', 'stevekevins@gmail.com', '$2y$10$K6WYQde9XQDfg16B.J0w1u.9dbPJXsrbg39AUxz6junzMCqQsEolq', '2025-06-18 06:28:49', '0812345678', '1999-09-13', 'SDM Umum dan Komunikasi', 'Pria', 'kota sorong'),
+(2, 'steve kevin', 'stevekevin', 'stevekevin@gmail.com', '$2y$10$ZJ97cgpbLWJcl0JXvYNxj.fIqmh0z2DD.INnoUODbEr7a7nbdZ3NW', '2025-06-18 06:36:07', NULL, NULL, NULL, NULL, NULL),
+(3, 'steve kevin', 'stevekevinss', 'stevekevinss@gmail.com', '$2y$10$FpRCcSWyEtYF.vdIEWlojuEcV2jLl2XgbajMshv3R17nTc87Fe6la', '2025-06-18 08:17:53', NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -113,7 +120,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `arsip`
 --
 ALTER TABLE `arsip`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
